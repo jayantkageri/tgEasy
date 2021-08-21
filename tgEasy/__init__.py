@@ -28,7 +28,7 @@ from .decorater import *
 from .helpers import *
 import logging
 logging.basicConfig(level=logging.INFO)
-__version__ = "0.1.0"
+__version__ = "0.1.1"
 __copyright__ = "Copyright 2021 Jayant Hegde Kageri <github.com/jayantkageri>"
 __license__ = "GNU Lesser General Public License v3 or later (LGPLv3+)"
 
