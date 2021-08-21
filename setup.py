@@ -71,5 +71,5 @@ setup(
     python_requires="~=3.6",
     packages=find_packages(),
     zip_safe=False,
-    install_requires=['pyrogram', 'tgcrypto', 'pyromod']
+    install_requires=['pyrogram', 'tgcrypto', 'pyromod', 'prettyconf']
 )

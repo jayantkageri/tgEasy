@@ -17,17 +17,19 @@
 # along with tgEasy.  If not, see <http://www.gnu.org/licenses/>.
 
 import os
-import dotenv
+from prettyconf import Configuration
+from prettyconf.loaders import Environment, EnvFile
 
-dotenv.load_dotenv()
+env_file = f"{os.getcwd()}/.env"
+config = Configuration(loaders=[Environment(), EnvFile(filename=env_file)])
 
 
 class Config(object):
     """
     Configuratoins of `tgEasy`.
     """
-    API_ID = int(os.environ.get("API_ID"))
-    API_HASH = os.environ.get("API_HASH")
-    BOT_TOKEN = os.environ.get("BOT_TOKEN")
-    LOGS = os.environ.get("LOGS")
-    PLUGINS = os.environ.get("PLUGINS", None)
+    API_ID = config("API_ID")
+    API_HASH = config("API_HASH")
+    BOT_TOKEN = config("BOT_TOKEN")
+    LOGS = config("LOGS")
+    PLUGINS = config("PLUGINS", None)

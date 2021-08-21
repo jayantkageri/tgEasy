@@ -19,4 +19,4 @@
 pyrogram
 TgCrypto
 pyromod
-python-dotenv
+prettyconf

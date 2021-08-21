@@ -28,7 +28,7 @@ from .decorater import *
 from .helpers import *
 import logging
 logging.basicConfig(level=logging.INFO)
-__version__ = "0.1.1"
+__version__ = "0.1.3"
 __copyright__ = "Copyright 2021 Jayant Hegde Kageri <github.com/jayantkageri>"
 __license__ = "GNU Lesser General Public License v3 or later (LGPLv3+)"
 
@@ -58,7 +58,7 @@ def run():
     print(f"tgEasy v{__version__}, {__copyright__}")
     print(f"Licenced under the terms of {__license__}", end='\n\n')
     if not Config.LOGS:
-        raise NameError("Log Group ID is't Set, tgEasy Quitting")
+        logging.warning("Log Group ID is't Set, Please set it else Bot will not able to Send Crash Logs")
     logging.info("Starting the pyrogram.Client")
     try:
         app.start()
