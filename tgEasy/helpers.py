@@ -16,8 +16,10 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with tgEasy.  If not, see <http://www.gnu.org/licenses/>.
 
+import os
 import typing
 import pyrogram
+import tgEasy
 
 
 async def get_user(m: typing.Union[pyrogram.types.Message, pyrogram.types.CallbackQuery]):
@@ -240,7 +242,7 @@ async def check_rights(chat_id: typing.Union[int, int], user_id: typing.Union[in
         await message.chat.kick_member(user.id)
     """
     try:
-        user = await tgEasy.app.get_chat_member(chat_id, user_id)
+        user = await tgEasy.tgClient.__client__.get_chat_member(chat_id, user_id)
     except:
         return False
     if user.status == "user":
@@ -266,6 +268,7 @@ async def check_rights(chat_id: typing.Union[int, int], user_id: typing.Union[in
         if rights in permission:
             return True
         return False
+    return False
 
 async def is_admin(chat_id: typing.Union[int, str], user_id: typing.Union[int, str]) -> bool:
     """
@@ -295,7 +298,7 @@ async def ban(client, message):
     await message.reply_text("User has been Banned.")
     """
     try:
-        user = await tgEasy.app.get_chat_member(chat_id, user_id)
+        user = await tgEasy.tgClient.__client__.get_chat_member(chat_id, user_id)
     except:
         return False
     if user.status == "administrator" or user.status == "creator":

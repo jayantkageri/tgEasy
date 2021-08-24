@@ -25,13 +25,16 @@ along with tgEasy.  If not, see <http://www.gnu.org/licenses/>.
 
 # tgEasy
 ```python
-from tgEasy import command, run
+from tgEasy import tgClient, command
+from pyrogram import Client
+
+app = tgClient(Client("my_account"))
 
 @command("start", group_only=True)
 async def start(client, message):
     await message.reply_text(f"Hello {message.from_user.mention}")
 
-run()
+app.run()
 ```
 
 ## Featurs
@@ -56,10 +59,24 @@ run()
   - `BOT_TOKEN` - Bot Token provided by Bot Father
   - `LOGS` - Log Group ID
   - `PLUGINS` - Plugins Directory Path where your Plugins are located, By Default it is `plugins` Directory
+  - `HANDLERS` - The Command Handlers, By Default it is `/` and `!`
 
 ## Documatation
-- Add `from tgEasy import run` and `run()` for running
 - Never name `tgEasy` for your any files/directory 
+
+### `tgEasy.tgClient`
+- A Class for Initialising the tgEasy and it's Methods, Types and Functions
+- Parameters:
+  - client (`pyrogram.Client`):
+    - The Pyrogram Client
+
+#### Example
+```python
+from tgEasy import tgClient
+from pyrogram import Client
+
+app = tgClient(Client("my_account"))
+```
 ### `tgEasy.command`
 - A decorater to Register Commands in simple way and manage errors in that Function itself, alternative for `@pyrogram.Client.on_message(pyrogram.filters.command('command'))`
 - Parameters:
@@ -74,6 +91,9 @@ run()
 
   - self_admin (bool) **optional**:
     - If True, the command will only executeed if the Bot is Admin in the Chat, By Default False
+
+  - self_only (bool) **optional**:
+    - If True, the command will only executeed if the Bot is Admin in the Chat, By Default False
   
   - filter (`~pyrogram.filters`) **optional**:
     - Pyrogram Filters, hope you know about this, for Advaced usage. By Default `~pyrogram.filters.edited` and this can't be changed. Use `and` for seaperating filters.
@@ -83,7 +103,7 @@ run()
 import pyrogram
 from tgEasy import command
 
-@command("start", group_only=False, pm_only=False, self_admin=False, pyrogram.filters.chat("777000") and pyrogram.filters.text)
+@command("start", group_only=False, pm_only=False, self_admin=False, self_only=False, pyrogram.filters.chat("777000") and pyrogram.filters.text)
 async def start(client, message):
     await message.reply_text(f"Hello {message.from_user.mention}")
 ```
@@ -143,8 +163,8 @@ async def start(client, message):
     await message.reply_text(f"Hello Admin {message.from_user.mention}")
 ```
 
-### `tgEasy.run()`
-- Runs the `pyrogram.Client` by adding `tgEasy.run()` in your main file and run [Not Recommended to use this], instead of running `python3 -m tgEasy`.
+### `tgEasy.tgClient.run()`
+- Runs the `pyrogram.Client` by adding `tgEasy.tgClient.run()` in your main file and run [Not Recommended to use this], instead of running `python3 -m tgEasy`.
 
 - This calls `pyrogram.Client.start()`, `pyrogram.idle()` and `pyrogram.Client.stop()`
 #### Example

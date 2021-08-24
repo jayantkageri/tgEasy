@@ -17,6 +17,7 @@
 # along with tgEasy.  If not, see <http://www.gnu.org/licenses/>.
 
 import os
+import typing
 
 import pyrogram
 from .config import Config
@@ -27,60 +28,73 @@ from pyromod.nav import Pagination
 from .decorater import *
 from .helpers import *
 import logging
-logging.basicConfig(level=logging.INFO)
-__version__ = "0.1.3"
+__version__ = "1.1.3"
 __copyright__ = "Copyright 2021 Jayant Hegde Kageri <github.com/jayantkageri>"
 __license__ = "GNU Lesser General Public License v3 or later (LGPLv3+)"
 
-app = pyrogram.Client(
-    session_name="pyrogram",
-    api_id=Config.API_ID,
-    api_hash=Config.API_HASH,
-    bot_token=Config.BOT_TOKEN,
-    plugins={"root": Config.PLUGINS} if Config.PLUGINS else None
-    )
-app.__doc__ = "`~pyrogram.Client`"
-client, client.__doc__ = app, app.__doc__
-
-def run():
+class tgClient:
     """
-### `tgEasy.run()`
-- Runs the `pyrogram.Client` by adding `tgEasy.run()` in your main file and run.
+### `tgEasy.tgClient`
+- A Class for Initialising the tgEasy and it's Methods, Types and Functions
+- Parameters:
+  - client (`pyrogram.Client`):
+    - The Pyrogram Client
 
-- This calls `pyrogram.Client.start()`, `pyrogram.idle()` and `pyrogram.Client.stop()`
 #### Example
 .. code-block:: python
-    from tgEasy import run
+    from tgEasy import tgClient
+    from pyrogram import Client
 
-    run()
+    app = tgClient(Client("my_account"))
     """
-    import logging
-    print(f"tgEasy v{__version__}, {__copyright__}")
-    print(f"Licenced under the terms of {__license__}", end='\n\n')
-    if not Config.LOGS:
-        logging.warning("Log Group ID is't Set, Please set it else Bot will not able to Send Crash Logs")
-    logging.info("Starting the pyrogram.Client")
-    try:
-        app.start()
-        app.send_message(Config.LOGS, "pyrogram.Client Started")
-    except pyrogram.errors.exceptions.bad_request_400.AccessTokenExpired:
-        raise AccessTokenExpired("[400 ACCESS_TOKEN_EXPIRED]: The bot token has expired, Use Diffrent one or change it to the Correct one")
-    except pyrogram.errors.exceptions.bad_request_400.PeerIdInvalid:
-        logging.warning("Interact the Bot to your Log Group Now")
-        pass
-    if Config.PLUGINS and not os.path.exists(Config.PLUGINS):
-        logging.warn(f"There is no directory named {Config.PLUGINS}, tgEasy Quitting")
-        quit()
-    logging.info("Started the pyrogram.Client")
-    logging.info("Idling the pyrogram.Client")
-    pyrogram.idle()
-    logging.info("Sending Message before Stopping the pyrogram.Client")
-    try:
-        app.send_message(
-            Config.LOGS, "pyrogram.Client Stopped, If this is UnExpected check Logs")
-    except pyrogram.errors.exceptions.bad_request_400.PeerIdInvalid:
-        logging.warning("Unable to Send Message to Log Group, Please Interact Bot with the Log Group while Running")
-        pass
-    logging.info("Stopping the pyrogram.Client")
-    app.stop()
-    logging.info("Stopped the pyrogram.Client")
+    __client__ = None
+    def __init__(
+        self,
+        client = pyrogram.Client
+    ):
+        super().__init__()
+        self.__client__ = client
+        tgClient.__client__ = self.__client__
+        print(f"tgEasy v{__version__}, {__copyright__}")
+        print(f"Licenced under the terms of {__license__}", end='\n\n')
+
+    def run(self):
+        """
+    ### `tgEasy.tgClient.run()`
+    - Runs the `pyrogram.Client` by adding `tgEasy.tgClient.run()` in your main file and run.
+
+    - This calls `pyrogram.Client.start()`, `pyrogram.idle()` and `pyrogram.Client.stop()`
+    #### Example
+    .. code-block:: python
+        from tgEasy import tgClient
+        from pyrogram import Client
+
+        app = tgClient(Client)
+
+        app.run()
+        """
+        import logging
+        if not Config.LOGS:
+            logging.warning("Log Group ID is't Set, Please set it else Bot will not able to Send Crash Logs")
+        logging.info("Starting the pyrogram.Client")
+        try:
+            self.__client__.start()
+            self.__client__.send_message(Config.LOGS, "pyrogram.Client Started")
+        except pyrogram.errors.exceptions.bad_request_400.AccessTokenExpired:
+            raise AccessTokenExpired("[400 ACCESS_TOKEN_EXPIRED]: The bot token has expired, Use Diffrent one or change it to the Correct one")
+        except pyrogram.errors.exceptions.bad_request_400.PeerIdInvalid:
+            logging.warning("Interact the Bot to your Log Group Now")
+            pass
+        logging.info("Started the pyrogram.Client")
+        logging.info("Idling the pyrogram.Client")
+        pyrogram.idle()
+        logging.info("Sending Message before Stopping the pyrogram.Client")
+        try:
+            self.__client__.send_message(
+                Config.LOGS, "pyrogram.Client Stopped, If this is UnExpected check Logs")
+        except pyrogram.errors.exceptions.bad_request_400.PeerIdInvalid:
+            logging.warning("Unable to Send Message to Log Group, Please Interact Bot with the Log Group while Running")
+            pass
+        logging.info("Stopping the pyrogram.Client")
+        self.__client__.stop()
+        logging.info("Stopped the pyrogram.Client")

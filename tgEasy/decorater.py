@@ -23,7 +23,7 @@ import pyrogram
 from .config import Config
 from .helpers import *
 
-def command(command: typing.Union[str, list], pm_only: typing.Union[bool, bool] = False, group_only: typing.Union[bool, bool] = False, self_admin: typing.Union[bool, bool] = False, filter: typing.Union[pyrogram.filters.Filter, pyrogram.filters.Filter] = None, *args, **kwargs):
+def command(command: typing.Union[str, list], pm_only: typing.Union[bool, bool] = False, group_only: typing.Union[bool, bool] = False, self_admin: typing.Union[bool, bool] = False, self_only: typing.Union[bool] = False, filter: typing.Union[pyrogram.filters.Filter, pyrogram.filters.Filter] = None, *args, **kwargs):
     """
 ### `tgEasy.command`
 - A decorater to Register Commands in simple way and manage errors in that Function itself, alternative for `@pyrogram.Client.on_message(pyrogram.filters.command('command'))`
@@ -37,6 +37,9 @@ def command(command: typing.Union[str, list], pm_only: typing.Union[bool, bool] 
   - pm_only (bool) **optional**:
     - If True, the command will only executed in Private Messages only, By Default False.
 
+  - self_only (bool) **optional**:
+    - If True, the command will only excute if used by Self only, By Default False.
+
   - self_admin (bool) **optional**:
     - If True, the command will only executeed if the Bot is Admin in the Chat, By Default False
 
@@ -48,16 +51,20 @@ def command(command: typing.Union[str, list], pm_only: typing.Union[bool, bool] 
     import pyrogram
     from tgEasy import command
 
-    @command("start", group_only=False, pm_only=False, self_admin=False, pyrogram.filters.chat("777000") and pyrogram.filters.text)
+    @command("start", group_only=False, pm_only=False, self_admin=False, self_only=False, pyrogram.filters.chat("777000") and pyrogram.filters.text)
     async def start(client, message):
         await message.reply_text(f"Hello {message.from_user.mention}")
     """
     if filter:
-        filter = pyrogram.filters.command(command, prefixes=list(
-            "/!")) & ~pyrogram.filters.edited & filter
+        if self_only:
+            filter = pyrogram.filters.command(command, prefixes=Config.HANDLERS) & ~pyrogram.filters.edited & filter &filters.me if self_only else pyrogram.filters.command(command, prefixes=Config.HANDLER) & ~pyrogram.filters.edited & filter & pyrogram.filters.me
+        else:
+            filter = pyrogram.filters.command(command, prefixes=Config.HANDLERS) & ~pyrogram.filters.edited & filter &filters.me if self_only else pyrogram.filters.command(command, prefixes=Config.HANDLER) & ~pyrogram.filters.edited & filter
     else:
-        filter = pyrogram.filters.command(
-            command, prefixes=list("/!")) & ~pyrogram.filters.edited
+        if self_only:
+            filter = pyrogram.filters.command(command, prefixes=Config.HANDLERS) & ~pyrogram.filters.edited & pyrogram.filters.me
+        else:
+            filter = pyrogram.filters.command(command, prefixes=Config.HANDLERS) & ~pyrogram.filters.edited
 
     def wrapper(func):
         async def decorator(client, message: pyrogram.types.Message):
@@ -79,8 +86,7 @@ def command(command: typing.Union[str, list], pm_only: typing.Union[bool, bool] 
                 await client.leave_chat(message.chat.id)
             except BaseException as exception:
                 return await handle_error(exception, message)
-        tgEasy.app.add_handler(
-            pyrogram.handlers.MessageHandler(decorator, filter))
+        tgEasy.tgClient.__client__.add_handler(pyrogram.handlers.MessageHandler(callback=decorator, filters=filter))
         return decorator
     return wrapper
 
@@ -138,55 +144,10 @@ def callback(data: typing.Union[str, list], self_admin: typing.Union[bool, bool]
                 pass
             except BaseException as e:
                 return await handle_error(e, CallbackQuery)
-        tgEasy.app.add_handler(
+        tgEasy.tgClient.__client__.add_handler(
             pyrogram.handlers.CallbackQueryHandler(decorator, filter))
         return decorator
     return wrapper
-
-
-async def callback_func(func, subFunc2, client, message, permission, *args, **kwargs):
-    """
-    Helper Function for Verifying Anonymous Admin Rights
-    """
-    def callable():
-        @client.on_callback_query(pyrogram.filters.regex("^confirm.*"))
-        async def calllback(client, CallbackQuery):
-            if not await check_rights(CallbackQuery.message.chat.id, CallbackQuery.from_user.id, permission):
-                try:
-                    await send.edit_text(f"You are Missing the following Rights to use this Command:\n{permission}")
-
-                    return subFunc2
-                except pyrogram.exception.forbidden_403.ChatWriteForbidden:
-                    await client.leave_chat(message.chat.id)
-
-                    return subFunc2
-                except BaseException as exception:
-                    await handle_error(exception, message)
-
-                    return subFunc2
-            try:
-                await message.delete()
-                await func(client, message)
-                return subFunc2
-            except pyrogram.errors.exception.forbidden_403.ChatWriteForbidden:
-                await client.leave_chat(message.chat.id)
-                return subFunc2
-            except BaseException as exception:
-                await handle_error(exception, client, message)
-                return subFunc2
-    return callable()
-
-
-async def anonymous(func, subFunc2, client, message, permission, *args, **kwargs):
-    """
-    Helper for Checking the Rights of an Anonymous Admin
-    """
-    send = await message.reply_text(
-        "It Looks like you are Anonymous Admin, Click the below Button to Confirm your Identity",
-        reply_markup=tgEasy.ikb([[["Confirm your Identity", "confirm"]]])
-    )
-    await callback_func(func, subFunc2, client, message, permission, *args, **kwargs)
-
 
 def adminsOnly(permission: typing.Union[str, list], TRUST_ANON_ADMINS: typing.Union[bool, bool] = False):
     """
@@ -211,6 +172,8 @@ def adminsOnly(permission: typing.Union[str, list], TRUST_ANON_ADMINS: typing.Un
     """
     def wrapper(func):
         async def decorator(client, message):
+            if not message.chat.type == "supergroup":
+                return await message.reply_text("This command can be used in supergroups only.")
             if message.sender_chat:
                 if not TRUST_ANON_ADMINS:
                     return await message.reply_text(
@@ -222,6 +185,8 @@ def adminsOnly(permission: typing.Union[str, list], TRUST_ANON_ADMINS: typing.Un
                     return await client.leave_chat(message.chat.id)
                 except BaseException as exception:
                     return await handle_error(exception, message)
+            if not await is_admin(message.chat.id, message.from_user.id):
+                return await message.reply_text("Only admins can execute this Command!")
             if not await check_rights(message.chat.id, message.from_user.id, permission):
                 return await message.reply_text(f"You are Missing the following Rights to use this Command:\n{permission}")
             try:

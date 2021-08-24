@@ -24,7 +24,7 @@ env_file = f"{os.getcwd()}/.env"
 config = Configuration(loaders=[Environment(), EnvFile(filename=env_file)])
 
 
-class Config(object):
+class Config:
     """
     Configuratoins of `tgEasy`.
     """
@@ -32,4 +32,5 @@ class Config(object):
     API_HASH = config("API_HASH")
     BOT_TOKEN = config("BOT_TOKEN")
     LOGS = config("LOGS")
-    PLUGINS = config("PLUGINS", None)
+    PLUGINS = config("PLUGINS", default=None)
+    HANDLERS = list(config("HANDLER", default="/!"))
