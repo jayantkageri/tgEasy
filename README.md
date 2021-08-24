@@ -54,9 +54,6 @@ app.run()
 ## Configuration
 
  Make an .env or set the Following in your Environment Variables.
-  - `API_ID` - The API ID Provided by Telegram
-  - `API_HASH` - The API Hash Provided by Telegram
-  - `BOT_TOKEN` - Bot Token provided by Bot Father
   - `LOGS` - Log Group ID
   - `PLUGINS` - Plugins Directory Path where your Plugins are located, By Default it is `plugins` Directory
   - `HANDLERS` - The Command Handlers, By Default it is `/` and `!`
