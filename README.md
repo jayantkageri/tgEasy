@@ -30,7 +30,7 @@ from pyrogram import Client
 
 app = tgClient(Client("my_account"))
 
-@command("start", group_only=True)
+@app.command("start", group_only=True)
 async def start(client, message):
     await message.reply_text(f"Hello {message.from_user.mention}")
 
@@ -54,9 +54,6 @@ app.run()
 ## Configuration
 
  Make an .env or set the Following in your Environment Variables.
-  - `API_ID` - The API ID Provided by Telegram
-  - `API_HASH` - The API Hash Provided by Telegram
-  - `BOT_TOKEN` - Bot Token provided by Bot Father
   - `LOGS` - Log Group ID
   - `PLUGINS` - Plugins Directory Path where your Plugins are located, By Default it is `plugins` Directory
   - `HANDLERS` - The Command Handlers, By Default it is `/` and `!`
@@ -77,7 +74,7 @@ from pyrogram import Client
 
 app = tgClient(Client("my_account"))
 ```
-### `tgEasy.command`
+### `tgEasy.tgClient.command`
 - A decorater to Register Commands in simple way and manage errors in that Function itself, alternative for `@pyrogram.Client.on_message(pyrogram.filters.command('command'))`
 - Parameters:
   - command (str || list):
@@ -101,14 +98,16 @@ app = tgClient(Client("my_account"))
 #### Example
 ```python
 import pyrogram
-from tgEasy import command
+from tgEasy import tgClient
 
-@command("start", group_only=False, pm_only=False, self_admin=False, self_only=False, pyrogram.filters.chat("777000") and pyrogram.filters.text)
+app = tgClient(pyrogram.Client())
+
+@app.command("start", group_only=False, pm_only=False, self_admin=False, self_only=False, pyrogram.filters.chat("777000") and pyrogram.filters.text)
 async def start(client, message):
     await message.reply_text(f"Hello {message.from_user.mention}")
 ```
 
-### `tgEasy.callback`
+### `tgEasy.tgClient.callback`
 
 - A decorater to Register Callback Quiries in simple way and manage errors in that Function itself, alternative for `@pyrogram.Client.on_callback_query(pyrogram.filters.regex('^data.*'))`
 - Parameters:
@@ -124,9 +123,11 @@ async def start(client, message):
 #### Example
 ```python
 import pyrogram
-from tgEasy import command, callback
+from tgEasy import tgClient
 
-@command("start")
+app = tgClient(pyrogram.Client())
+
+@app.command("start")
 async def start(client, message):
     await message.reply_text(
       f"Hello {message.from_user.mention}",
@@ -138,11 +139,11 @@ async def start(client, message):
       ]])
     )
 
-@callback("data")
+@app.callback("data")
 async def data(client, CallbackQuery):
   await CallbackQuery.answer("Hello :)", show_alert=True)
 ```
-### `tgEasy.adminsOnly`
+### `tgEasy.tgClient.adminsOnly`
 - A decorater for running the function only if the admin have the specified Rights.
 <!-- - If the admin is Anonymous Admin, it also checks his rights by making an Callback -->
 - We are still Working on this to make it to check Rights for Anonoymous Admins, Stay Tuned.
@@ -155,23 +156,47 @@ async def data(client, CallbackQuery):
 
 #### Example
 ```python
-from tgEasy import command, adminsOnly
+from tgEasy import tgClient
+import pyrogram
 
-@command("start")
-@adminsOnly("can_change_info")
+app = tgClient(pyrogram.Client())
+
+@app.command("start")
+@app.adminsOnly("can_change_info")
 async def start(client, message):
     await message.reply_text(f"Hello Admin {message.from_user.mention}")
 ```
 
 ### `tgEasy.tgClient.run()`
-- Runs the `pyrogram.Client` by adding `tgEasy.tgClient.run()` in your main file and run [Not Recommended to use this], instead of running `python3 -m tgEasy`.
+- Runs the `pyrogram.Client` by adding `tgEasy.tgClient.run()` in your main file and run.
 
 - This calls `pyrogram.Client.start()`, `pyrogram.idle()` and `pyrogram.Client.stop()`
 #### Example
 ```python
-from tgEasy import run
+import pyrogram
+from tgEasy import tgClient
 
-run()
+app = tgClient(pyrogram.Client())
+
+app.run()
+```
+
+### `tgEast.tgClint.runClients()`
+- Runs the Multiple `pyrogram.Client` of tgEasy by adding `tgEasy.tgClient.run()` in your main file and run.
+
+- This calls `pyrogram.Client.start()`, `pyrogram.idle()` and `pyrogram.Client.stop()`
+
+- Pass the tgEasy Clients in it.
+
+#### Example
+```python
+from tgEasy import tgClient
+import pyrogram
+
+app = tgClient(pyrogram.Client())
+app1 = tgClient(pyrogram.Client())
+
+tgClient.runClients(app, app1)
 ```
 ### `tgEasy.get_user`
 - Gets a User from Message/RepliedMessageFromUser
@@ -183,10 +208,13 @@ run()
 
 #### Example
 ```python
-from tgEasy import get_user, command, adminsOnly
+from tgEasy import get_user, tgClient
+import pyrogram
 
-@command("ban", group_only=True, self_admin=True)
-@adminsOnly("can_restrict_members")
+app = tgClient(pyrogram.Client())
+
+@app.command("ban", group_only=True, self_admin=True)
+@app.adminsOnly("can_restrict_members")
 async def ban(client, message):
   user = await get_user(message)
   await message.chat.kick_member(user.id)
@@ -202,9 +230,12 @@ async def ban(client, message):
 
 #### Example
 ```python
-from tgEasy import command, get_user_adv
+from tgEasy import get_user_adv
+import pyrogram
 
-@command("id")
+app = tgClient(pyrogram.Client())
+
+@app.command("id")
 async def id(client, message):
   user = await get_user_adv(message)
   await message.reply_text(f"Your ID is `{user.id}`")
@@ -224,15 +255,21 @@ async def id(client, message):
   - rights (str):
     - The Rights have to Check.
 
+  - client (`pyrogram.Client`):
+    - From which Client to Check the Rights.
+
 - Returns:
   - `True` if the User have the Right.
   - `False` if the User don't have the Right.
 
 #### Example
 ```python
-from tgEasy import command, check_rights, get_user
+from tgEasy import tgClient, check_rights, get_user
+import pyrogram
 
-@command("ban", group_only=True, self_admin=True)
+app = tgClient(pyrogram.Client())
+
+@app.command("ban", group_only=True, self_admin=True)
 async def ban(client, message):
   if not await check_rights(message.chat.id, message.from_user.id, "can_restrict_members"):
     return await message.reply_text("You don't have necessary rights to use this Command.")
@@ -249,15 +286,21 @@ async def ban(client, message):
     - user_id (int):
         - The User ID of Whose Admin Status have to Check.
 
+    - client (`pyrogram.Client`):
+        - From which Client to Check the Admin Status.
+
 - Returns:
     - `True` if the User is Admin.
     - `False` if the User is't Admin.
  #### Example
 ```python
-from tgEasy import command, is_admin, adminsOnly
+from tgEasy import tgClient, is_admin, adminsOnly
+import pyrogram
 
-@command("ban", group_only=True, self_admin=True)
-@adminsOnly("can_restrict_members")
+app = tgClient(pyrogram.Client())
+
+@app.command("ban", group_only=True, self_admin=True)
+@app.adminsOnly("can_restrict_members")
 async def ban(client, message):
     if await is_admin(message.chat.id, (await get_user(mesasge)).id):
         return await message.reply_text("You can't Ban Admins.")
@@ -278,9 +321,12 @@ async def ban(client, message):
 
 #### Exapmle
 ```python
-from tgEasy import command, handle_error
+from tgEasy import tgClient, handle_error
+import pyrogram
 
-@command("start")
+app = tgClient(pyrogram.Client())
+
+@app.command("start")
 async def start(client, message):
   try:
     await message.reply_text("Hi :D') # I intentionally made an bug for Example :/
@@ -297,9 +343,12 @@ async def start(client, message):
 
 #### Example
 ```python
-from tgEasy import command, send_typing
+from tgEasy import tgClinet, send_typing
+import pyrogram
 
-@command("start")
+app = tgClient(pyrogram.Client())
+
+@app.command("start")
 async def start(client, message):
   await send_typing(message)
   await message.reply_text("Hello")

@@ -28,9 +28,6 @@ class Config:
     """
     Configuratoins of `tgEasy`.
     """
-    API_ID = config("API_ID")
-    API_HASH = config("API_HASH")
-    BOT_TOKEN = config("BOT_TOKEN")
     LOGS = config("LOGS")
     PLUGINS = config("PLUGINS", default=None)
     HANDLERS = list(config("HANDLER", default="/!"))

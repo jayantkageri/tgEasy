@@ -18,8 +18,13 @@
 
 import os
 import typing
+
 import pyrogram
+
 import tgEasy
+
+from .config import Config
+from .scaffold import Scaffold
 
 
 async def get_user(m: typing.Union[pyrogram.types.Message, pyrogram.types.CallbackQuery]):
@@ -34,13 +39,13 @@ async def get_user(m: typing.Union[pyrogram.types.Message, pyrogram.types.Callba
 
 #### Example
     .. code-block:: python
-    from tgEasy import get_user, command, adminsOnly
+        from tgEasy import get_user, command, adminsOnly
 
-    @command("ban", group_only=True, self_admin=True)
-    @adminsOnly("can_restrict_members")
-    async def ban(client, message):
-        user = await get_user(message)
-        await message.chat.kick_member(user.id)
+        @command("ban", group_only=True, self_admin=True)
+        @adminsOnly("can_restrict_members")
+        async def ban(client, message):
+            user = await get_user(message)
+            await message.chat.kick_member(user.id)
     """
     if isinstance(m, pyrogram.types.Message):
         message = m
@@ -84,6 +89,7 @@ async def get_user(m: typing.Union[pyrogram.types.Message, pyrogram.types.Callba
             pass
     return False
 
+
 async def get_user_adv(m: typing.Union[pyrogram.types.Message, pyrogram.types.CallbackQuery]):
     """
 ### `tgEasy.get_user_adv`
@@ -97,12 +103,12 @@ async def get_user_adv(m: typing.Union[pyrogram.types.Message, pyrogram.types.Ca
 
 #### Example
     .. code-block:: python
-    from tgEasy import command, get_user_adv
+        from tgEasy import command, get_user_adv
 
-    @command("id")
-    async def id(client, message):
-        user = await get_user_adv(message)
-        await message.reply_text(f"Your ID is `{user.id}`")
+        @command("id")
+        async def id(client, message):
+            user = await get_user_adv(message)
+            await message.reply_text(f"Your ID is `{user.id}`")
     """
     if isinstance(m, pyrogram.types.Message):
         message = m
@@ -137,6 +143,7 @@ async def get_user_adv(m: typing.Union[pyrogram.types.Message, pyrogram.types.Ca
 
     return await message._client.get_users(message.from_user.id)
 
+
 async def send_typing(m: typing.Union[pyrogram.types.Message, pyrogram.types.CallbackQuery]):
     """
 ### `tgEasy.send_typing`
@@ -148,12 +155,15 @@ async def send_typing(m: typing.Union[pyrogram.types.Message, pyrogram.types.Cal
 
 #### Example
     .. code-block:: python
-    from tgEasy import command, send_typing
+        from tgEasy import tgClinet, send_typing
+        import pyrogram
 
-    @command("start")
-    async def start(client, message):
-    await send_typing(message)
-    await message.reply_text("Hello")
+        app = tgClient(pyrogram.Client())
+
+        @app.command("start")
+        async def start(client, message):
+        await send_typing(message)
+        await message.reply_text("Hello")
     """
     if isinstance(m, pyrogram.types.Message):
         message = m
@@ -179,17 +189,21 @@ async def handle_error(error, m: typing.Union[pyrogram.types.Message, pyrogram.t
 
 #### Exapmle
     .. code-block:: python
-    from tgEasy import command, handle_error
+        from tgEasy import tgClient, handle_error
+        import pyrogram
 
-    @command("start")
-    async def start(client, message):
+        app = tgClient(pyrogram.Client())
+
+        @app.command("start")
+        async def start(client, message):
         try:
             await message.reply_text("Hi :D') # I intentionally made an bug for Example :/
         except Exceptation as e:
             return await handle_error(e, message)
     """
     import traceback
-    import logging
+
+    from . import logging
     with open("crash.log", "w+", encoding="utf-8") as log:
         log.write(traceback.format_exc())
         log.close()
@@ -210,39 +224,45 @@ async def handle_error(error, m: typing.Union[pyrogram.types.Message, pyrogram.t
     os.remove('crash.log')
 
 
-async def check_rights(chat_id: typing.Union[int, int], user_id: typing.Union[int, int], rights: typing.Union[str, str]) -> bool:
+async def check_rights(chat_id: typing.Union[int, int], user_id: typing.Union[int, int], rights: typing.Union[str, str], client) -> bool:
     """
-### `tgEasy.check_rights`
-- Checks the Rights of an User
-- This is an Helper Function for `adminsOnly`
+    ### `tgEasy.check_rights`
+    - Checks the Rights of an User
+    - This is an Helper Function for `adminsOnly`
 
-- Parameters:
-  - chat_id (int):
-    - The Chat ID of Which Chat have to check the Rights.
+    - Parameters:
+    - chat_id (int):
+        - The Chat ID of Which Chat have to check the Rights.
 
-  - user_id (int):
-    - The User ID of Whose Rights have to Check.
+    - user_id (int):
+        - The User ID of Whose Rights have to Check.
 
-  - rights (str):
-    - The Rights have to Check.
+    - rights (str):
+        - The Rights have to Check.
 
-- Returns:
-  - `True` if the User have the Right.
-  - `False` if the User don't have the Right.
+    - client (`pyrogram.Client`):
+        - From which Client to Check the Rights.
 
-### Example
-.. code-block:: python
-    from tgEasy import command, check_rights, get_user
+    - Returns:
+    - `True` if the User have the Right.
+    - `False` if the User don't have the Right.
 
-    @command("ban", group_only=True, self_admin=True)
-    async def ban(client, message):
+    #### Example
+    .. code-block:: python
+        from tgEasy import tgClient, check_rights, get_user
+        import pyrogram
+
+        app = tgClient(pyrogram.Client())
+
+        @app.command("ban", group_only=True, self_admin=True)
+        async def ban(client, message):
         if not await check_rights(message.chat.id, message.from_user.id, "can_restrict_members"):
             return await message.reply_text("You don't have necessary rights to use this Command.")
         user = await get_user(message)
         await message.chat.kick_member(user.id)
     """
     try:
-        user = await tgEasy.tgClient.__client__.get_chat_member(chat_id, user_id)
+        user = await client.get_chat_member(chat_id, user_id)
     except:
         return False
     if user.status == "user":
@@ -270,35 +290,42 @@ async def check_rights(chat_id: typing.Union[int, int], user_id: typing.Union[in
         return False
     return False
 
-async def is_admin(chat_id: typing.Union[int, str], user_id: typing.Union[int, str]) -> bool:
+
+async def is_admin(chat_id: typing.Union[int, str], user_id: typing.Union[int, str], client) -> bool:
     """
-### `tgEasy.is_admin`
-- A Functions to Check if the User is Admin or not
+    ### `tgEasy.is_admin`
+    - A Functions to Check if the User is Admin or not
 
-- Parameters:
-    - chat_id (int):
-        - The Chat ID of Which Chat have to check the Admin Status.
+    - Parameters:
+        - chat_id (int):
+            - The Chat ID of Which Chat have to check the Admin Status.
 
-    - user_id (int):
-        - The User ID of Whose Admin Status have to Check.
+        - user_id (int):
+            - The User ID of Whose Admin Status have to Check.
 
-- Returns:
-    - `True` if the User is Admin.
-    - `False` if the User is't Admin.
- #### Example
-.. code-block:: python
-from tgEasy import command, is_admin, adminsOnly
+        - client (`pyrogram.Client`):
+            - From which Client to Check the Admin Status.
 
-@command("ban", group_only=True, self_admin=True)
-@adminsOnly("can_restrict_members")
-async def ban(client, message):
-    if await is_admin(message.chat.id, (await get_user(mesasge)).id):
-        return await message.reply_text("You can't Ban Admins.")
-    await message.chat.kick_member((await get_user(message)).id)
-    await message.reply_text("User has been Banned.")
+    - Returns:
+        - `True` if the User is Admin.
+        - `False` if the User is't Admin.
+    #### Example
+    .. code-block:: python
+        from tgEasy import tgClient, is_admin, adminsOnly
+        import pyrogram
+
+        app = tgClient(pyrogram.Client())
+
+        @app.command("ban", group_only=True, self_admin=True)
+        @app.adminsOnly("can_restrict_members")
+        async def ban(client, message):
+            if await is_admin(message.chat.id, (await get_user(mesasge)).id):
+                return await message.reply_text("You can't Ban Admins.")
+            await message.chat.kick_member((await get_user(message)).id)
+            await message.reply_text("User has been Banned.")
     """
     try:
-        user = await tgEasy.tgClient.__client__.get_chat_member(chat_id, user_id)
+        user = await client.get_chat_member(chat_id, user_id)
     except:
         return False
     if user.status == "administrator" or user.status == "creator":
