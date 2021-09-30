@@ -166,6 +166,7 @@ class Callback(Scaffold):
 
 
 class AdminsOnly(Scaffold):
+    @staticmethod
     def adminsOnly(self, permission: typing.Union[str, list], TRUST_ANON_ADMINS: typing.Union[bool, bool] = False):
         """
     ### `tgEasy.tgClient.adminsOnly`
