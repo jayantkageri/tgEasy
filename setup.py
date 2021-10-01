@@ -61,7 +61,7 @@ setup(
         "Topic :: Software Development :: Libraries",
         "Topic :: Software Development :: Libraries :: Python Modules",
     ],
-    keywords="telegram chat messenger mtproto api client library python pyrogram tgeasy monkey patcher",
+    keywords="telegram chat messenger mtproto api client library python pyrogram tgeasy",
     project_urls={
         "Tracker": "https://github.com/jayantkageri/tgEasys/issues",
         "Community": "https://telegram.me/tgEasyNews",

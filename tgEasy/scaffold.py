@@ -3,8 +3,11 @@ import os
 import platform
 import re
 import sys
+
 import pyrogram
+
 import tgEasy
+
 
 class Scaffold:
     def __init__(self):

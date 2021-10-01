@@ -17,12 +17,15 @@
 # along with tgEasy.  If not, see <http://www.gnu.org/licenses/>.
 
 import os
-import tgEasy
 import typing
+
 import pyrogram
+
+import tgEasy
+from tgEasy.scaffold import Scaffold
+
 from .config import Config
 from .helpers import *
-from tgEasy.scaffold import Scaffold
 
 
 class Command(Scaffold):
@@ -91,7 +94,7 @@ class Command(Scaffold):
                     return await message.reply_text("This command can be used in PMs only.")
                 try:
                     await func(client, message)
-                except pyrogram.errors.forbidden_403.ChatWriteForbidden:
+                except pyrogram.errors.exceptions.forbidden_403.ChatWriteForbidden:
                     await client.leave_chat(message.chat.id)
                 except BaseException as exception:
                     return await handle_error(exception, message)
@@ -149,9 +152,9 @@ class Callback(Scaffold):
             async def decorator(client, CallbackQuery: pyrogram.types.CallbackQuery):
                 if self_admin:
                     me = await client.get_me()
-                    mee = await client.get_chat_member(message.chat.id, me.id)
+                    mee = await client.get_chat_member(CallbackQuery.chat.id, me.id)
                     if not mee.status == "admin":
-                        return await message.reply_text("I must be admin to execute this Command")
+                        return await CallbackQuery.message.edit_text("I must be admin to execute this Command")
                     pass
                 try:
                     await func(client, CallbackQuery)
@@ -205,7 +208,7 @@ class AdminsOnly(Scaffold):
                     return await message.reply_text(f"You are Missing the following Rights to use this Command:\n{permission}")
                 try:
                     await func(client, message)
-                except pyrogram.errors.exception.forbidden_403.ChatWriteForbidden:
+                except pyrogram.errors.exceptions.forbidden_403.ChatWriteForbidden:
                     await client.leave_chat(message.chat.id)
                 except BaseException as exception:
                     await handle_error(exception, message)

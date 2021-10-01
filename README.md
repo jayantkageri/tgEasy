@@ -25,7 +25,7 @@ along with tgEasy.  If not, see <http://www.gnu.org/licenses/>.
 
 # tgEasy
 ```python
-from tgEasy import tgClient, command
+from tgEasy import tgClient
 from pyrogram import Client
 
 app = tgClient(Client("my_account"))

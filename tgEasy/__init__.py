@@ -32,7 +32,7 @@ from .config import Config
 from .decorater import *
 from .helpers import *
 
-__version__ = "1.2.3"
+__version__ = "1.2.4"
 __copyright__ = "Copyright 2021 Jayant Hegde Kageri <github.com/jayantkageri>"
 __license__ = "GNU Lesser General Public License v3 or later (LGPLv3+)"
 logging = logger.getLogger("tgEasy")
@@ -49,26 +49,26 @@ class Methods(
 
 class tgClient(Methods, Scaffold):
     notice_displayed = False
-    """
-### `tgEasy.tgClient`
-- A Class for Initialising the tgEasy and it's Methods, Types and Functions
-- Parameters:
-  - client (`pyrogram.Client`):
-    - The Pyrogram Client
-
-#### Example
-.. code-block:: python
-    from tgEasy import tgClient
-    from pyrogram import Client
-
-    app = tgClient(Client("my_account"))
-    """
     __client__ = None
 
     def __init__(
         self,
         client=pyrogram.Client
     ):
+        """
+        ### `tgEasy.tgClient`
+        - A Class for Initialising the tgEasy and it's Methods, Types and Functions
+        - Parameters:
+        - client (`pyrogram.Client`):
+            - The Pyrogram Client
+
+        #### Example
+        .. code-block:: python
+            from tgEasy import tgClient
+            from pyrogram import Client
+
+            app = tgClient(Client("my_account"))
+        """
         super().__init__()
         self.__client__ = client
         tgClient.__client__ = self.__client__

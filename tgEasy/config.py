@@ -17,8 +17,9 @@
 # along with tgEasy.  If not, see <http://www.gnu.org/licenses/>.
 
 import os
+
 from prettyconf import Configuration
-from prettyconf.loaders import Environment, EnvFile
+from prettyconf.loaders import EnvFile, Environment
 
 env_file = f"{os.getcwd()}/.env"
 config = Configuration(loaders=[Environment(), EnvFile(filename=env_file)])
