@@ -198,11 +198,10 @@ class AdminsOnly(Scaffold):
             async def decorator(client, message):
                 if not message.chat.type == "supergroup":
                     return await message.reply_text("This command can be used in supergroups only.")
-                if message.sender_chat:
-                    if not TRUST_ANON_ADMINS:
-                        return await message.reply_text(
-                            "The Right Check for Anonymous Admins is in Development. So you cannot perform this Action for Now, If you don't want this and want to Allow Anonymous Admins for performing Actions in this time Please Contact Bot Owner."
-                        )
+                if message.sender_chat and not TRUST_ANON_ADMINS:
+                    return await message.reply_text(
+                        "The Right Check for Anonymous Admins is in Development. So you cannot perform this Action for Now, If you don't want this and want to Allow Anonymous Admins for performing Actions in this time Please Contact Bot Owner."
+                    )
                 if not await is_admin(message.chat.id, message.from_user.id, client=client):
                     return await message.reply_text("Only admins can execute this Command!")
                 if not await check_rights(message.chat.id, message.from_user.id, permission, client=client):
