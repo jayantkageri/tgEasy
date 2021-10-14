@@ -267,7 +267,7 @@ async def check_rights(chat_id: typing.Union[int, int], user_id: typing.Union[in
         return False
     if user.status == "user":
         return False
-    if user.status == "administrator" or user.status == "creator":
+    if user.status in ("administrator", "creator"):
         permission = []
         if user.can_delete_messages:
             permission.append("can_delete_messages")
@@ -328,6 +328,6 @@ async def is_admin(chat_id: typing.Union[int, str], user_id: typing.Union[int, s
         user = await client.get_chat_member(chat_id, user_id)
     except:
         return False
-    if user.status == "administrator" or user.status == "creator":
+    if user.status in ("administrator", "creator"):
         return True
     return False
