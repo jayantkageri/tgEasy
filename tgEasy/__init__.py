@@ -92,7 +92,6 @@ class tgClient(Methods, Scaffold):
 
         app.run()
         """
-        import logging
         if not Config.LOGS:
             logging.warning(
                 "Log Group ID is't Set, Please set it else Bot will not able to Send Crash Logs")
@@ -138,7 +137,6 @@ class tgClient(Methods, Scaffold):
 
         tgClient.runClients(app, app1)
         """
-        import logging
         if not Config.LOGS:
             logging.warning(
                 "Log Group ID is't Set, Please set it else Bot will not able to Send Crash Logs")
