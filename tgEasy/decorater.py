@@ -69,7 +69,7 @@ class Command(Scaffold):
                     command, prefixes=Config.HANDLER) & ~pyrogram.filters.edited & filter & pyrogram.filters.me
             else:
                 filter = pyrogram.filters.command(command, prefixes=Config.HANDLERS) & ~pyrogram.filters.edited & filter & filters.me if self_only else pyrogram.filters.command(
-                    command, prefixes=Config.HANDLER) & ~pyrogram.filters.edited & filter
+                    command, prefixes=Config.HANDLERS) & ~pyrogram.filters.edited & filter
         else:
             if self_only:
                 filter = pyrogram.filters.command(
