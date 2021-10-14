@@ -118,7 +118,7 @@ class tgClient(Methods, Scaffold):
         self.__client__.stop()
         logging.info("Stopped the pyrogram.Client")
 
-    def runClients(*args):
+    def runClients(self, *args):
         """
     ### `tgEast.tgClint.runClients()`
     - Runs the Multiple `pyrogram.Client` of tgEasy by adding `tgEasy.tgClient.run()` in your main file and run.
