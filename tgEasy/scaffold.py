@@ -21,13 +21,13 @@ class Scaffold:
         self.__client__ = None
 
         def command(*args, **kwargs):
-            pass
+            raise NotImplementedError()
 
         def callback(*args, **kwargs):
-            pass
+            raise NotImplementedError()
 
         def adminsOnly(*args, **kwargs):
-            pass
+            raise NotImplementedError()
 
         async def check_rights(*args, **kwargs):
             pass
