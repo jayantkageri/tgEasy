@@ -18,8 +18,6 @@
 
 import asyncio
 import logging as logger
-import os
-import typing
 
 import pyrogram
 from pyrogram import client
@@ -31,8 +29,9 @@ from pyromod.nav import Pagination
 from .config import Config
 from .decorater import *
 from .helpers import *
+from .scaffold import Scaffold
 
-__version__ = "1.2.6"
+__version__ = "1.2.7"
 __copyright__ = "Copyright 2021 Jayant Hegde Kageri <github.com/jayantkageri>"
 __license__ = "GNU Lesser General Public License v3 or later (LGPLv3+)"
 logging = logger.getLogger("tgEasy")

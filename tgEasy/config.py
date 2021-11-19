@@ -21,8 +21,8 @@ import os
 from prettyconf import Configuration
 from prettyconf.loaders import EnvFile, Environment
 
-env_file = f"{os.getcwd()}/.env"
-config = Configuration(loaders=[Environment(), EnvFile(filename=env_file)])
+config = Configuration(
+    loaders=[Environment(), EnvFile(filename=f"{os.getcwd()}/.env")])
 
 
 class Config:

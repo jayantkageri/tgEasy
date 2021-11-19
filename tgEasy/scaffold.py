@@ -17,12 +17,6 @@
 # along with tgEasy.  If not, see <http://www.gnu.org/licenses/>.
 
 import asyncio
-import os
-import platform
-import re
-import sys
-
-import pyrogram
 
 import tgEasy
 
