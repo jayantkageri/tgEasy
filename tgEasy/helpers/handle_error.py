@@ -54,7 +54,7 @@ async def handle_error(error, m: typing.Union[pyrogram.types.Message, pyrogram.t
     """
     import traceback
 
-    from . import logging
+    from .. import logging
     with open("crash.log", "w+", encoding="utf-8") as log:
         log.write(traceback.format_exc())
         log.close()
