@@ -22,8 +22,7 @@ import logging as logger
 import pyrogram
 from pyrogram import client
 from pyromod import listen
-from pyromod.helpers import (array_chunk, bki, btn, force_reply, ikb, kb, kbtn,
-                             ntb)
+from pyromod.helpers import array_chunk, bki, btn, force_reply, ikb, kb, kbtn, ntb
 from pyromod.nav import Pagination
 
 from .config import Config
@@ -38,11 +37,7 @@ logging = logger.getLogger("tgEasy")
 main_event_loop = asyncio.get_event_loop()
 
 
-class Methods(
-    Command,
-    Callback,
-    AdminsOnly
-):
+class Methods(Command, Callback, AdminsOnly):
     pass
 
 
@@ -50,10 +45,7 @@ class tgClient(Methods, Scaffold):
     notice_displayed = False
     __client__ = None
 
-    def __init__(
-        self,
-        client=pyrogram.Client
-    ):
+    def __init__(self, client=pyrogram.Client):
         """
         ### `tgEasy.tgClient`
         - A Class for Initialising the tgEasy and it's Methods, Types and Functions
@@ -73,32 +65,32 @@ class tgClient(Methods, Scaffold):
         tgClient.__client__ = self.__client__
         if not tgClient.notice_displayed:
             print(f"tgEasy v{__version__}, {__copyright__}")
-            print(f"Licenced under the terms of {__license__}", end='\n\n')
+            print(f"Licenced under the terms of {__license__}", end="\n\n")
             tgClient.notice_displayed = True
 
     def run(self):
         """
-    ### `tgEasy.tgClient.run()`
-    - Runs the `pyrogram.Client` by adding `tgEasy.tgClient.run()` in your main file.
+        ### `tgEasy.tgClient.run()`
+        - Runs the `pyrogram.Client` by adding `tgEasy.tgClient.run()` in your main file.
 
-    - This calls `pyrogram.Client.start()`, `pyrogram.idle()` and `pyrogram.Client.stop()`
-    #### Example
-    .. code-block:: python
-        from tgEasy import tgClient
-        from pyrogram import Client
+        - This calls `pyrogram.Client.start()`, `pyrogram.idle()` and `pyrogram.Client.stop()`
+        #### Example
+        .. code-block:: python
+            from tgEasy import tgClient
+            from pyrogram import Client
 
-        app = tgClient(Client)
+            app = tgClient(Client)
 
-        app.run()
+            app.run()
         """
         if not Config.LOGS:
             logging.warning(
-                "Log Group ID is't Set, Please set it else Bot will not able to Send Crash Logs")
+                "Log Group ID is't Set, Please set it else Bot will not able to Send Crash Logs"
+            )
         logging.info("Starting the pyrogram.Client")
         try:
             self.__client__.start()
-            self.__client__.send_message(
-                Config.LOGS, "pyrogram.Client Started")
+            self.__client__.send_message(Config.LOGS, "pyrogram.Client Started")
         except pyrogram.errors.exceptions.bad_request_400.PeerIdInvalid:
             logging.warning("Interact the Bot to your Log Group Now")
             pass
@@ -108,10 +100,12 @@ class tgClient(Methods, Scaffold):
         logging.info("Sending Message before Stopping the pyrogram.Client")
         try:
             self.__client__.send_message(
-                Config.LOGS, "pyrogram.Client Stopped, If this is UnExpected check Logs")
+                Config.LOGS, "pyrogram.Client Stopped, If this is UnExpected check Logs"
+            )
         except pyrogram.errors.exceptions.bad_request_400.PeerIdInvalid:
             logging.warning(
-                "Unable to Send Message to Log Group, Please Interact Bot with the Log Group while Running")
+                "Unable to Send Message to Log Group, Please Interact Bot with the Log Group while Running"
+            )
             pass
         logging.info("Stopping the pyrogram.Client")
         self.__client__.stop()
@@ -119,33 +113,35 @@ class tgClient(Methods, Scaffold):
 
     def runClients(*args):
         """
-    ### `tgEast.tgClint.runClients()`
-    - Runs the Multiple `pyrogram.Client` of tgEasy by adding `tgEasy.tgClient.run()` in your main file and run.
+        ### `tgEast.tgClint.runClients()`
+        - Runs the Multiple `pyrogram.Client` of tgEasy by adding `tgEasy.tgClient.run()` in your main file and run.
 
-    - This calls `pyrogram.Client.start()`, `pyrogram.idle()` and `pyrogram.Client.stop()`
+        - This calls `pyrogram.Client.start()`, `pyrogram.idle()` and `pyrogram.Client.stop()`
 
-    - Pass the tgEasy Clients in it.
+        - Pass the tgEasy Clients in it.
 
-    #### Example
-    .. code-block:: python
-        from tgEasy import tgClient
-        import pyrogram
+        #### Example
+        .. code-block:: python
+            from tgEasy import tgClient
+            import pyrogram
 
-        app = tgClient(pyrogram.Client())
-        app1 = tgClient(pyrogram.Client())
+            app = tgClient(pyrogram.Client())
+            app1 = tgClient(pyrogram.Client())
 
-        tgClient.runClients(app, app1)
+            tgClient.runClients(app, app1)
         """
         if not Config.LOGS:
             logging.warning(
-                "Log Group ID is't Set, Please set it else Bot will not able to Send Crash Logs")
+                "Log Group ID is't Set, Please set it else Bot will not able to Send Crash Logs"
+            )
         logging.info("Starting the pyrogram.Client")
         try:
             for clients in args:
                 clients.__client__.start()
                 try:
                     clients.__client__.send_message(
-                        Config.LOGS, "pyrogram.Client Started") if Config.LOGS else None
+                        Config.LOGS, "pyrogram.Client Started"
+                    ) if Config.LOGS else None
                 except pyrogram.errors.exceptions.bad_request_400.PeerIdInvalid:
                     logging.warning("Interact the Bot to your Log Group Now")
                     pass
@@ -161,11 +157,14 @@ class tgClient(Methods, Scaffold):
             try:
                 logging.info(f"Sending Message before Stopping the {client}")
                 clients.__client__.send_message(
-                    Config.LOGS, "pyrogram.Client Stopped, If this is UnExpected check Logs") if Config.LOGS else None
+                    Config.LOGS,
+                    "pyrogram.Client Stopped, If this is UnExpected check Logs",
+                ) if Config.LOGS else None
 
             except:
                 logging.warning(
-                    "Unable to Send Message to Log Group, Please Interact Bot with the Log Group while Running")
+                    "Unable to Send Message to Log Group, Please Interact Bot with the Log Group while Running"
+                )
                 pass
 
             clients.__client__.stop()

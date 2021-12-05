@@ -21,14 +21,14 @@ import os
 from prettyconf import Configuration
 from prettyconf.loaders import EnvFile, Environment
 
-config = Configuration(
-    loaders=[Environment(), EnvFile(filename=f"{os.getcwd()}/.env")])
+config = Configuration(loaders=[Environment(), EnvFile(filename=f"{os.getcwd()}/.env")])
 
 
 class Config:
     """
     Configuratoins of `tgEasy`.
     """
+
     LOGS = config("LOGS")
     PLUGINS = config("PLUGINS", default=None)
     HANDLERS = list(config("HANDLER", default="/!"))
