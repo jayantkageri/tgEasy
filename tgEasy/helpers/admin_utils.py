@@ -19,7 +19,12 @@
 import typing
 
 
-async def check_rights(chat_id: typing.Union[int, int], user_id: typing.Union[int, int], rights: typing.Union[str, list], client) -> bool:
+async def check_rights(
+    chat_id: typing.Union[int, int],
+    user_id: typing.Union[int, int],
+    rights: typing.Union[str, list],
+    client,
+) -> bool:
     """
     ### `tgEasy.check_rights`
     - Checks the Rights of an User
@@ -92,7 +97,11 @@ async def check_rights(chat_id: typing.Union[int, int], user_id: typing.Union[in
     return False
 
 
-async def is_admin(chat_id: typing.Union[int, str], user_id: typing.Union[int, str], client) -> bool:
+async def is_admin(
+    chat_id: typing.Union[int, str],
+    user_id: typing.Union[int, str],
+    client,
+) -> bool:
     """
     ### `tgEasy.is_admin`
     - A Functions to Check if the User is Admin or not

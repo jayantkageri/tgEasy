@@ -21,26 +21,28 @@ import typing
 import pyrogram
 
 
-async def send_typing(m: typing.Union[pyrogram.types.Message, pyrogram.types.CallbackQuery]):
+async def send_typing(
+    m: typing.Union[pyrogram.types.Message, pyrogram.types.CallbackQuery],
+):
     """
-### `tgEasy.send_typing`
-- A Function to Send the Typing Status to the Chat.
+    ### `tgEasy.send_typing`
+    - A Function to Send the Typing Status to the Chat.
 
-- Parameters:
-  - m (`pyrogram.types.Message` || `pyrogram.types.CallbackQuery`):
-    - Message or Callbackquery.
+    - Parameters:
+      - m (`pyrogram.types.Message` || `pyrogram.types.CallbackQuery`):
+        - Message or Callbackquery.
 
-#### Example
-    .. code-block:: python
-        from tgEasy import tgClinet, send_typing
-        import pyrogram
+    #### Example
+        .. code-block:: python
+            from tgEasy import tgClinet, send_typing
+            import pyrogram
 
-        app = tgClient(pyrogram.Client())
+            app = tgClient(pyrogram.Client())
 
-        @app.command("start")
-        async def start(client, message):
-        await send_typing(message)
-        await message.reply_text("Hello")
+            @app.command("start")
+            async def start(client, message):
+            await send_typing(message)
+            await message.reply_text("Hello")
     """
     if isinstance(m, pyrogram.types.Message):
         message = m

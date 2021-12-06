@@ -1,6 +1,7 @@
 # tgEasy - Easy for a brighter Shine. A monkey pather add-on for Pyrogram
 # Copyright (C) 2021 Jayant Hegde Kageri <https://github.com/jayantkageri>
 
+prettyconf
 # This file is part of tgEasy.
 
 # tgEasy is free software: you can redistribute it and/or modify
@@ -17,6 +18,5 @@
 # along with tgEasy.  If not, see <http://www.gnu.org/licenses/>.
 
 pyrogram
-TgCrypto
 pyromod
-prettyconf
+TgCrypto

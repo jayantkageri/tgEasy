@@ -19,49 +19,57 @@
 import typing
 
 import pyrogram
+
 from tgEasy.scaffold import Scaffold
 
 from ..helpers import handle_error
 
 
 class Callback(Scaffold):
-    def callback(self, data: typing.Union[str, list], self_admin: typing.Union[bool, bool] = False, filter: typing.Union[pyrogram.filters.Filter, pyrogram.filters.Filter] = None, *args, **kwargs):
+    def callback(
+        self,
+        data: typing.Union[str, list],
+        self_admin: typing.Union[bool, bool] = False,
+        filter: typing.Union[pyrogram.filters.Filter, pyrogram.filters.Filter] = None,
+        *args,
+        **kwargs,
+    ):
         """
-    ### `tgEasy.tgClient.callback`
+        ### `tgEasy.tgClient.callback`
 
-    - A decorater to Register Callback Quiries in simple way and manage errors in that Function itself, alternative for `@pyrogram.Client.on_callback_query(pyrogram.filters.regex('^data.*'))`
-    - Parameters:
-    - data (str || list):
-        - The callback query to be handled for a function
+        - A decorater to Register Callback Quiries in simple way and manage errors in that Function itself, alternative for `@pyrogram.Client.on_callback_query(pyrogram.filters.regex('^data.*'))`
+        - Parameters:
+        - data (str || list):
+            - The callback query to be handled for a function
 
-    - self_admin (bool) **optional**:
-        - If True, the command will only executeed if the Bot is Admin in the Chat, By Default False
+        - self_admin (bool) **optional**:
+            - If True, the command will only executeed if the Bot is Admin in the Chat, By Default False
 
-    - filter (`~pyrogram.filters`) **optional**:
-        - Pyrogram Filters, hope you know about this, for Advaced usage. Use `and` for seaperating filters.
+        - filter (`~pyrogram.filters`) **optional**:
+            - Pyrogram Filters, hope you know about this, for Advaced usage. Use `and` for seaperating filters.
 
-    #### Example
-    .. code-block:: python
-        import pyrogram
-        from tgEasy import tgClient
+        #### Example
+        .. code-block:: python
+            import pyrogram
+            from tgEasy import tgClient
 
-        app = tgClient(pyrogram.Client())
+            app = tgClient(pyrogram.Client())
 
-        @app.command("start")
-        async def start(client, message):
-            await message.reply_text(
-            f"Hello {message.from_user.mention}",
-            reply_markup=pyrogram.types.InlineKeyboardMarkup([[
-                pyrogram.types.InlineKeyboardButton(
-                "Click Here",
-                "data"
+            @app.command("start")
+            async def start(client, message):
+                await message.reply_text(
+                f"Hello {message.from_user.mention}",
+                reply_markup=pyrogram.types.InlineKeyboardMarkup([[
+                    pyrogram.types.InlineKeyboardButton(
+                    "Click Here",
+                    "data"
+                    )
+                ]])
                 )
-            ]])
-            )
 
-        @app.callback("data")
-        async def data(client, CallbackQuery):
-        await CallbackQuery.answer("Hello :)", show_alert=True)
+            @app.callback("data")
+            async def data(client, CallbackQuery):
+            await CallbackQuery.answer("Hello :)", show_alert=True)
         """
         if filter:
             filter = pyrogram.filters.regex(f"^{data}.*") & args["filter"]
@@ -71,9 +79,14 @@ class Callback(Scaffold):
         def wrapper(func):
             async def decorator(client, CallbackQuery: pyrogram.types.CallbackQuery):
                 if self_admin:
-                    me = await client.get_chat_member(CallbackQuery.message.chat.id, (await client.get_me()).id)
+                    me = await client.get_chat_member(
+                        CallbackQuery.message.chat.id,
+                        (await client.get_me()).id,
+                    )
                     if not me.status in ("creator", "administrator"):
-                        return await CallbackQuery.message.edit_text("I must be admin to execute this Command")
+                        return await CallbackQuery.message.edit_text(
+                            "I must be admin to execute this Command",
+                        )
                     pass
                 try:
                     await func(client, CallbackQuery)
@@ -81,7 +94,10 @@ class Callback(Scaffold):
                     pass
                 except BaseException as e:
                     return await handle_error(e, CallbackQuery)
+
             self.__client__.add_handler(
-                pyrogram.handlers.CallbackQueryHandler(decorator, filter))
+                pyrogram.handlers.CallbackQueryHandler(decorator, filter),
+            )
             return decorator
+
         return wrapper

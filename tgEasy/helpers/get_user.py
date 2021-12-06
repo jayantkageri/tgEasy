@@ -21,25 +21,27 @@ import typing
 import pyrogram
 
 
-async def get_user(m: typing.Union[pyrogram.types.Message, pyrogram.types.CallbackQuery]):
+async def get_user(
+    m: typing.Union[pyrogram.types.Message, pyrogram.types.CallbackQuery],
+):
     """
-### `tgEasy.get_user`
-- Gets a User from Message/RepliedMessage/CallbackQuery
-- Parameters:
-  - m (`~pyrogram.types.Message` || `~pyrogram.types.CallbackQuery`)
-- Returns:
-  - `pyrogram.types.User` on Success
-  - `False` on Error
+    ### `tgEasy.get_user`
+    - Gets a User from Message/RepliedMessage/CallbackQuery
+    - Parameters:
+      - m (`~pyrogram.types.Message` || `~pyrogram.types.CallbackQuery`)
+    - Returns:
+      - `pyrogram.types.User` on Success
+      - `False` on Error
 
-#### Example
-    .. code-block:: python
-        from tgEasy import get_user, command, adminsOnly
+    #### Example
+        .. code-block:: python
+            from tgEasy import get_user, command, adminsOnly
 
-        @command("ban", group_only=True, self_admin=True)
-        @adminsOnly("can_restrict_members")
-        async def ban(client, message):
-            user = await get_user(message)
-            await message.chat.kick_member(user.id)
+            @command("ban", group_only=True, self_admin=True)
+            @adminsOnly("can_restrict_members")
+            async def ban(client, message):
+                user = await get_user(message)
+                await message.chat.kick_member(user.id)
     """
     if isinstance(m, pyrogram.types.Message):
         message = m
@@ -84,25 +86,27 @@ async def get_user(m: typing.Union[pyrogram.types.Message, pyrogram.types.Callba
     return False
 
 
-async def get_user_adv(m: typing.Union[pyrogram.types.Message, pyrogram.types.CallbackQuery]):
+async def get_user_adv(
+    m: typing.Union[pyrogram.types.Message, pyrogram.types.CallbackQuery],
+):
     """
-### `tgEasy.get_user_adv`
-- A Function to Get the User from the Message/CallbackQuery, If there is None arguments, returns the From User.
-- Parameters:
-  - m (`pyrogram.types.Message` || `pyrogram.types.CallbackQuery`):
-    - Message or Callbackquery.
-- Returns:
-  - `pyrogram.types.User` on Success
-  - `False` on Error
+    ### `tgEasy.get_user_adv`
+    - A Function to Get the User from the Message/CallbackQuery, If there is None arguments, returns the From User.
+    - Parameters:
+      - m (`pyrogram.types.Message` || `pyrogram.types.CallbackQuery`):
+        - Message or Callbackquery.
+    - Returns:
+      - `pyrogram.types.User` on Success
+      - `False` on Error
 
-#### Example
-    .. code-block:: python
-        from tgEasy import command, get_user_adv
+    #### Example
+        .. code-block:: python
+            from tgEasy import command, get_user_adv
 
-        @command("id")
-        async def id(client, message):
-            user = await get_user_adv(message)
-            await message.reply_text(f"Your ID is `{user.id}`")
+            @command("id")
+            async def id(client, message):
+                user = await get_user_adv(message)
+                await message.reply_text(f"Your ID is `{user.id}`")
     """
     if isinstance(m, pyrogram.types.Message):
         message = m
@@ -129,7 +133,9 @@ async def get_user_adv(m: typing.Union[pyrogram.types.Message, pyrogram.types.Ca
         if "sender_chat" in str(message.reply_to_message):
             return False
         if "from_user" in str(message.reply_to_message):
-            return await message._client.get_users(message.reply_to_message.from_user.id)
+            return await message._client.get_users(
+                message.reply_to_message.from_user.id,
+            )
     except AttributeError:
         pass
     except Exception as e:
