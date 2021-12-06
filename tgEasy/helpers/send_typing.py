@@ -22,7 +22,7 @@ import pyrogram
 
 
 async def send_typing(
-    m: typing.Union[pyrogram.types.Message, pyrogram.types.CallbackQuery]
+    m: typing.Union[pyrogram.types.Message, pyrogram.types.CallbackQuery],
 ):
     """
     ### `tgEasy.send_typing`

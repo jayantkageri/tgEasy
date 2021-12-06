@@ -19,6 +19,7 @@
 import typing
 
 import pyrogram
+
 from tgEasy.scaffold import Scaffold
 
 from ..helpers import handle_error
@@ -79,11 +80,12 @@ class Callback(Scaffold):
             async def decorator(client, CallbackQuery: pyrogram.types.CallbackQuery):
                 if self_admin:
                     me = await client.get_chat_member(
-                        CallbackQuery.message.chat.id, (await client.get_me()).id
+                        CallbackQuery.message.chat.id,
+                        (await client.get_me()).id,
                     )
                     if not me.status in ("creator", "administrator"):
                         return await CallbackQuery.message.edit_text(
-                            "I must be admin to execute this Command"
+                            "I must be admin to execute this Command",
                         )
                     pass
                 try:
@@ -94,7 +96,7 @@ class Callback(Scaffold):
                     return await handle_error(e, CallbackQuery)
 
             self.__client__.add_handler(
-                pyrogram.handlers.CallbackQueryHandler(decorator, filter)
+                pyrogram.handlers.CallbackQueryHandler(decorator, filter),
             )
             return decorator
 

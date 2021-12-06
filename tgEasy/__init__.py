@@ -85,7 +85,7 @@ class tgClient(Methods, Scaffold):
         """
         if not Config.LOGS:
             logging.warning(
-                "Log Group ID is't Set, Please set it else Bot will not able to Send Crash Logs"
+                "Log Group ID is't Set, Please set it else Bot will not able to Send Crash Logs",
             )
         logging.info("Starting the pyrogram.Client")
         try:
@@ -100,11 +100,12 @@ class tgClient(Methods, Scaffold):
         logging.info("Sending Message before Stopping the pyrogram.Client")
         try:
             self.__client__.send_message(
-                Config.LOGS, "pyrogram.Client Stopped, If this is UnExpected check Logs"
+                Config.LOGS,
+                "pyrogram.Client Stopped, If this is UnExpected check Logs",
             )
         except pyrogram.errors.exceptions.bad_request_400.PeerIdInvalid:
             logging.warning(
-                "Unable to Send Message to Log Group, Please Interact Bot with the Log Group while Running"
+                "Unable to Send Message to Log Group, Please Interact Bot with the Log Group while Running",
             )
             pass
         logging.info("Stopping the pyrogram.Client")
@@ -132,7 +133,7 @@ class tgClient(Methods, Scaffold):
         """
         if not Config.LOGS:
             logging.warning(
-                "Log Group ID is't Set, Please set it else Bot will not able to Send Crash Logs"
+                "Log Group ID is't Set, Please set it else Bot will not able to Send Crash Logs",
             )
         logging.info("Starting the pyrogram.Client")
         try:
@@ -140,7 +141,8 @@ class tgClient(Methods, Scaffold):
                 clients.__client__.start()
                 try:
                     clients.__client__.send_message(
-                        Config.LOGS, "pyrogram.Client Started"
+                        Config.LOGS,
+                        "pyrogram.Client Started",
                     ) if Config.LOGS else None
                 except pyrogram.errors.exceptions.bad_request_400.PeerIdInvalid:
                     logging.warning("Interact the Bot to your Log Group Now")
@@ -163,7 +165,7 @@ class tgClient(Methods, Scaffold):
 
             except:
                 logging.warning(
-                    "Unable to Send Message to Log Group, Please Interact Bot with the Log Group while Running"
+                    "Unable to Send Message to Log Group, Please Interact Bot with the Log Group while Running",
                 )
                 pass
 

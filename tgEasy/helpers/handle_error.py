@@ -25,7 +25,8 @@ from ..config import Config
 
 
 async def handle_error(
-    error, m: typing.Union[pyrogram.types.Message, pyrogram.types.CallbackQuery]
+    error,
+    m: typing.Union[pyrogram.types.Message, pyrogram.types.CallbackQuery],
 ):
     """
     ### `tgEasy.handle_error`
@@ -64,10 +65,12 @@ async def handle_error(
     if isinstance(m, pyrogram.types.Message):
         try:
             await m.reply_text(
-                "An Internal Error Occurred while Processing your Command, the Logs have been sent to the Owners of this Bot. Sorry for Inconvenience"
+                "An Internal Error Occurred while Processing your Command, the Logs have been sent to the Owners of this Bot. Sorry for Inconvenience",
             )
             await m._client.send_document(
-                Config.LOGS, "crash.log", caption="Crash Report of this Bot"
+                Config.LOGS,
+                "crash.log",
+                caption="Crash Report of this Bot",
             )
         except:
             pass
@@ -75,10 +78,12 @@ async def handle_error(
         try:
             await m.message.delete()
             await m.message.reply_text(
-                "An Internal Error Occurred while Processing your Command, the Logs have been sent to the Owners of this Bot. Sorry for Inconvenience"
+                "An Internal Error Occurred while Processing your Command, the Logs have been sent to the Owners of this Bot. Sorry for Inconvenience",
             )
             await m.message._client.send_document(
-                Config.LOGS, "crash.log", caption="Crash Report of this Bot"
+                Config.LOGS,
+                "crash.log",
+                caption="Crash Report of this Bot",
             )
         except:
             pass

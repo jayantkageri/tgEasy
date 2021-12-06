@@ -98,7 +98,9 @@ async def check_rights(
 
 
 async def is_admin(
-    chat_id: typing.Union[int, str], user_id: typing.Union[int, str], client
+    chat_id: typing.Union[int, str],
+    user_id: typing.Union[int, str],
+    client,
 ) -> bool:
     """
     ### `tgEasy.is_admin`

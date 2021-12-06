@@ -22,7 +22,7 @@ import pyrogram
 
 
 async def get_user(
-    m: typing.Union[pyrogram.types.Message, pyrogram.types.CallbackQuery]
+    m: typing.Union[pyrogram.types.Message, pyrogram.types.CallbackQuery],
 ):
     """
     ### `tgEasy.get_user`
@@ -87,7 +87,7 @@ async def get_user(
 
 
 async def get_user_adv(
-    m: typing.Union[pyrogram.types.Message, pyrogram.types.CallbackQuery]
+    m: typing.Union[pyrogram.types.Message, pyrogram.types.CallbackQuery],
 ):
     """
     ### `tgEasy.get_user_adv`
@@ -134,7 +134,7 @@ async def get_user_adv(
             return False
         if "from_user" in str(message.reply_to_message):
             return await message._client.get_users(
-                message.reply_to_message.from_user.id
+                message.reply_to_message.from_user.id,
             )
     except AttributeError:
         pass

@@ -19,6 +19,7 @@
 import typing
 
 import pyrogram
+
 from tgEasy.scaffold import Scaffold
 
 from ..helpers import check_rights, handle_error, is_admin
@@ -59,34 +60,42 @@ class AdminsOnly(Scaffold):
                 permissions = ""
                 if not message.chat.type == "supergroup":
                     return await message.reply_text(
-                        "This command can be used in supergroups only."
+                        "This command can be used in supergroups only.",
                     )
                 if message.sender_chat and not TRUST_ANON_ADMINS:
                     return await message.reply_text(
-                        "The Right Check for Anonymous Admins is in Development. So you cannot perform this Action for Now, If you don't want this and want to Allow Anonymous Admins for performing Actions in this time Please Contact Bot Owner."
+                        "The Right Check for Anonymous Admins is in Development. So you cannot perform this Action for Now, If you don't want this and want to Allow Anonymous Admins for performing Actions in this time Please Contact Bot Owner.",
                     )
                 if not await is_admin(
-                    message.chat.id, message.from_user.id, client=client
+                    message.chat.id,
+                    message.from_user.id,
+                    client=client,
                 ):
                     return await message.reply_text(
-                        "Only admins can execute this Command!"
+                        "Only admins can execute this Command!",
                     )
                 if isinstance(permission, str):
                     if not await check_rights(
-                        message.chat.id, message.from_user.id, permission, client=client
+                        message.chat.id,
+                        message.from_user.id,
+                        permission,
+                        client=client,
                     ):
                         return await message.reply_text(
-                            f"You are Missing the following Rights to use this Command:\n{permission}"
+                            f"You are Missing the following Rights to use this Command:\n{permission}",
                         )
                 if isinstance(permission, list):
                     for perm in permission:
                         if not await check_rights(
-                            message.chat.id, message.from_user.id, perm, client=client
+                            message.chat.id,
+                            message.from_user.id,
+                            perm,
+                            client=client,
                         ):
                             permissions += f"\n{perm}"
                     if not permissions == "":
                         return await message.reply_text(
-                            f"You are Missing the following Rights to use this Command:{permissions}"
+                            f"You are Missing the following Rights to use this Command:{permissions}",
                         )
                 try:
                     await func(client, message)

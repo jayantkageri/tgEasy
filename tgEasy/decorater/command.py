@@ -19,6 +19,7 @@
 import typing
 
 import pyrogram
+
 from tgEasy.scaffold import Scaffold
 
 from ..config import Config
@@ -35,7 +36,7 @@ class Command(Scaffold):
         self_only: typing.Union[bool, bool] = False,
         filter: typing.Union[pyrogram.filters.Filter, pyrogram.filters.Filter] = None,
         *args,
-        **kwargs
+        **kwargs,
     ):
         """
         ### `tgEasy.tgClient.command`
@@ -102,24 +103,25 @@ class Command(Scaffold):
             async def decorator(client, message: pyrogram.types.Message):
                 if self_admin and message.chat.type != "supergroup":
                     return await message.reply_text(
-                        "This command can be used in supergroups only."
+                        "This command can be used in supergroups only.",
                     )
                 if self_admin:
                     me = await client.get_chat_member(
-                        message.chat.id, (await client.get_me()).id
+                        message.chat.id,
+                        (await client.get_me()).id,
                     )
                     if not me.status in ("creator", "administrator"):
                         return await message.reply_text(
-                            "I must be admin to execute this Command"
+                            "I must be admin to execute this Command",
                         )
                     pass
                 if group_only and message.chat.type != "supergroup":
                     return await message.reply_text(
-                        "This command can be used in supergroups only."
+                        "This command can be used in supergroups only.",
                     )
                 if pm_only and message.chat.type != "private":
                     return await message.reply_text(
-                        "This command can be used in PMs only."
+                        "This command can be used in PMs only.",
                     )
                 try:
                     await func(client, message)
@@ -129,7 +131,7 @@ class Command(Scaffold):
                     return await handle_error(exception, message)
 
             self.__client__.add_handler(
-                pyrogram.handlers.MessageHandler(callback=decorator, filters=filter)
+                pyrogram.handlers.MessageHandler(callback=decorator, filters=filter),
             )
             return decorator
 
