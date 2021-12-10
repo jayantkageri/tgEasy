@@ -116,13 +116,11 @@ async def get_user_adv(
         return False
     try:
         if len(message.command) > 1:
-            if message.command[1].startswith("@"):
-                return await get_user(message)
-            if message.command[1].isdigit():
-                return await get_user(message)
-            if "text_mention" in message.entities:
-                return await get_user(message)
-            if "from_user" in str(message.reply_to_message):
+            if (
+                message.command[1].startswith("@")
+                or "text_mention" in message.entities
+                or "from_user" in str(message.reply_to_message)
+            ):
                 return await get_user(message)
     except IndexError:
         pass

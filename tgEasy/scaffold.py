@@ -40,9 +40,3 @@ class Scaffold:
 
         def adminsOnly(*args, **kwargs):
             pass
-
-        async def check_rights(*args, **kwargs):
-            pass
-
-        async def is_admin(*args, **kwargs):
-            pass

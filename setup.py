@@ -16,17 +16,17 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with tgEasy.  If not, see <http://www.gnu.org/licenses/>.
 
-import os
 import re
-import shutil
-from sys import argv
 
 from setuptools import find_packages, setup
 
-with open("tgEasy/__init__.py", encoding="utf-8") as f:
+with open("tgEasy/__init__.py", "r", encoding="utf-8") as f:
     version = re.findall(r"__version__ = \"(.+)\"", f.read())[0]
 
-with open("README.md", encoding="utf-8") as f:
+with open("requirements.txt", encoding="utf-8") as f:
+    packages = f.read().splitlines()
+
+with open("README.md", "r", encoding="utf-8") as f:
     readme = f.read()
 
 setup(
@@ -48,7 +48,6 @@ setup(
         "Operating System :: OS Independent",
         "Programming Language :: Python",
         "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
@@ -66,10 +65,10 @@ setup(
         "Tracker": "https://github.com/jayantkageri/tgEasys/issues",
         "Community": "https://telegram.me/tgEasyNews",
         "Source": "https://github.com/jayantkageri/tgEasy",
-        "Documentation": "https://github.com/jayantkageri/tgEasy#documatation",
+        "Documentation": "https://github.com/jayantkageri/tgEasy/wiki",
     },
     python_requires="~=3.6",
     packages=find_packages(),
     zip_safe=False,
-    install_requires=["pyrogram", "tgcrypto", "pyromod", "prettyconf"],
+    install_requires=packages,
 )

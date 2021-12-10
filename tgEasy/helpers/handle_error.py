@@ -61,7 +61,6 @@ async def handle_error(
 
     with open("crash.log", "w+", encoding="utf-8") as log:
         log.write(traceback.format_exc())
-        log.close()
     if isinstance(m, pyrogram.types.Message):
         try:
             await m.reply_text(
