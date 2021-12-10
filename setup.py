@@ -23,7 +23,7 @@ from setuptools import find_packages, setup
 with open("tgEasy/__init__.py", "r", encoding="utf-8") as f:
     version = re.findall(r"__version__ = \"(.+)\"", f.read())[0]
 
-with open("requirements.txt", encoding="utf-8") as f:
+with open("requirements.txt", "r", encoding="utf-8") as f:
     packages = f.read().splitlines()
 
 with open("README.md", "r", encoding="utf-8") as f:
