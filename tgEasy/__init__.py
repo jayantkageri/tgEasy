@@ -22,8 +22,7 @@ import logging as logger
 import pyrogram
 from pyrogram import client
 from pyromod import listen
-from pyromod.helpers import (array_chunk, bki, btn, force_reply, ikb, kb, kbtn,
-                             ntb)
+from pyromod.helpers import array_chunk, bki, btn, force_reply, ikb, kb, kbtn, ntb
 from pyromod.nav import Pagination
 
 from .config import Config

@@ -34,7 +34,8 @@ class Command(Scaffold):
         group_only: typing.Union[bool, bool] = False,
         self_admin: typing.Union[bool, bool] = False,
         self_only: typing.Union[bool, bool] = False,
-        filter: typing.Union[pyrogram.filters.Filter, pyrogram.filters.Filter] = None,
+        filter: typing.Union[pyrogram.filters.Filter,
+                             pyrogram.filters.Filter] = None,
         *args,
         **kwargs,
     ):
@@ -106,11 +107,10 @@ class Command(Scaffold):
                         "This command can be used in supergroups only.",
                     )
                 if self_admin:
-                    me = await client.get_chat_member(
+                    if not await client.get_chat_member(
                         message.chat.id,
                         (await client.get_me()).id,
-                    )
-                    if not me.status in ("creator", "administrator"):
+                    ).status in ("creator", "administrator"):
                         return await message.reply_text(
                             "I must be admin to execute this Command",
                         )
@@ -127,11 +127,16 @@ class Command(Scaffold):
                     await func(client, message)
                 except pyrogram.errors.exceptions.forbidden_403.ChatWriteForbidden:
                     await client.leave_chat(message.chat.id)
+                except pyrogram.errors.exceptions.forbidden_403.ChatAdminRequired:
+                    return await message.edit_text(
+                        "I must be admin to execute this Command",
+                    )
                 except BaseException as exception:
                     return await handle_error(exception, message)
 
             self.__client__.add_handler(
-                pyrogram.handlers.MessageHandler(callback=decorator, filters=filter),
+                pyrogram.handlers.MessageHandler(
+                    callback=decorator, filters=filter),
             )
             return decorator
 

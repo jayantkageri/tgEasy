@@ -30,7 +30,8 @@ class Callback(Scaffold):
         self,
         data: typing.Union[str, list],
         self_admin: typing.Union[bool, bool] = False,
-        filter: typing.Union[pyrogram.filters.Filter, pyrogram.filters.Filter] = None,
+        filter: typing.Union[pyrogram.filters.Filter,
+                             pyrogram.filters.Filter] = None,
         *args,
         **kwargs,
     ):
@@ -79,11 +80,15 @@ class Callback(Scaffold):
         def wrapper(func):
             async def decorator(client, CallbackQuery: pyrogram.types.CallbackQuery):
                 if self_admin:
-                    me = await client.get_chat_member(
-                        CallbackQuery.message.chat.id,
-                        (await client.get_me()).id,
-                    )
-                    if not me.status in ("creator", "administrator"):
+                    if (
+                        not (
+                            await client.get_chat_member(
+                                CallbackQuery.message.chat.id,
+                                (await client.get_me()).id,
+                            )
+                        ).status
+                        in ("creator", "administrator")
+                    ):
                         return await CallbackQuery.message.edit_text(
                             "I must be admin to execute this Command",
                         )
@@ -91,7 +96,9 @@ class Callback(Scaffold):
                 try:
                     await func(client, CallbackQuery)
                 except pyrogram.errors.exceptions.forbidden_403.ChatAdminRequired:
-                    pass
+                    return await CallbackQuery.message.edit_text(
+                        "I must be admin to execute this Command",
+                    )
                 except BaseException as e:
                     return await handle_error(e, CallbackQuery)
 
