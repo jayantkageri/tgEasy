@@ -36,6 +36,7 @@ class Command(Scaffold):
         self_only: typing.Union[bool, bool] = False,
         filter: typing.Union[pyrogram.filters.Filter,
                              pyrogram.filters.Filter] = None,
+        HANDLER: typing.Optional[list] = Config.HANDLERS,
         *args,
         **kwargs,
     ):
@@ -61,6 +62,9 @@ class Command(Scaffold):
         - filter (`~pyrogram.filters`) **optional**:
             - Pyrogram Filters, hope you know about this, for Advaced usage. By Default `~pyrogram.filters.edited` and this can't be changed. Use `and` for seaperating filters.
 
+        - HANDLER (list) **optional**:
+            - Custom Command Handler for that command, By default it is `/` and `!`
+
         #### Example
         .. code-block:: python
             import pyrogram
@@ -68,21 +72,21 @@ class Command(Scaffold):
 
             app = tgClient(pyrogram.Client())
 
-            @app.command("start", group_only=False, pm_only=False, self_admin=False, self_only=False, pyrogram.filters.chat("777000") and pyrogram.filters.text)
+            @app.command("start", group_only=False, pm_only=False, self_admin=False, self_only=False, pyrogram.filters.chat("777000") and pyrogram.filters.text, HANDLER=["*", "."])
             async def start(client, message):
                 await message.reply_text(f"Hello {message.from_user.mention}")
         """
         if filter:
             if self_only:
                 filter = (
-                    pyrogram.filters.command(command, prefixes=Config.HANDLERS)
+                    pyrogram.filters.command(command, prefixes=HANDLER)
                     & ~pyrogram.filters.edited
                     & filter
                     & pyrogram.filters.me
                 )
             else:
                 filter = (
-                    pyrogram.filters.command(command, prefixes=Config.HANDLERS)
+                    pyrogram.filters.command(command, prefixes=HANDLER)
                     & ~pyrogram.filters.edited
                     & filter
                     & pyrogram.filters.me
@@ -90,13 +94,13 @@ class Command(Scaffold):
         else:
             if self_only:
                 filter = (
-                    pyrogram.filters.command(command, prefixes=Config.HANDLERS)
+                    pyrogram.filters.command(command, prefixes=HANDLER)
                     & ~pyrogram.filters.edited
                     & pyrogram.filters.me
                 )
             else:
                 filter = (
-                    pyrogram.filters.command(command, prefixes=Config.HANDLERS)
+                    pyrogram.filters.command(command, prefixes=HANDLER)
                     & ~pyrogram.filters.edited
                 )
 
