@@ -30,7 +30,7 @@ from .decorater import *
 from .helpers import *
 from .scaffold import Scaffold
 
-__version__ = "1.2.7"
+__version__ = "1.3.0"
 __copyright__ = "Copyright 2021 Jayant Hegde Kageri <github.com/jayantkageri>"
 __license__ = "GNU Lesser General Public License v3 or later (LGPLv3+)"
 logging = logger.getLogger("tgEasy")

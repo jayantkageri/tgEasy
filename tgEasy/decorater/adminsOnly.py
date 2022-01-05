@@ -19,19 +19,100 @@
 import typing
 
 import pyrogram
+from cachetools import TTLCache
+from pyrogram.types.messages_and_media import message
+
 from tgEasy.scaffold import Scaffold
 
 from ..helpers import check_rights, handle_error, is_admin
 
+ANON = TTLCache(maxsize=250, ttl=30)
+
+
+async def anonymous_admin(m: pyrogram.types.Message):
+    """
+    Helper function for Anonymous Admin Verification
+    """
+    keyboard = pyrogram.types.InlineKeyboardMarkup(
+        [
+            [
+                pyrogram.types.InlineKeyboardButton(
+                    text="Verify!",
+                    callback_data=f"anon.{m.message_id}",
+                ),
+            ]
+        ]
+    )
+    return await m.reply_text(
+        "Click here to prove you are admin with the required rights to perform this action!",
+        reply_markup=keyboard,
+    )
+
 
 class AdminsOnly(Scaffold):
+    async def anonymous_admin_verification(
+        client, CallbackQuery: pyrogram.types.CallbackQuery
+    ):
+        if int(
+            f"{CallbackQuery.message.chat.id}{CallbackQuery.data.split('.')[1]}"
+        ) not in set(ANON.keys()):
+            try:
+                await CallbackQuery.message.edit_text("Button has been Expired.")
+            except pyrogram.types.RPCError:
+                try:
+                    await CallbackQuery.message.delete()
+                except pyrogram.types.RPCError:
+                    pass
+            return
+        cb = ANON.pop(
+            int(f"{CallbackQuery.message.chat.id}{CallbackQuery.data.split('.')[1]}")
+        )
+        member = await CallbackQuery.message.chat.get_member(CallbackQuery.from_user.id)
+        if bool(member.status not in ("creator", "administrator")):
+            return await CallbackQuery.answer("You need to be an admin to do this.")
+        permission = cb[2]
+
+        if isinstance(permission, str):
+            if not await check_rights(
+                CallbackQuery.message.chat.id,
+                CallbackQuery.from_user.id,
+                permission,
+                client=client,
+            ):
+                return await CallbackQuery.message.edit_text(
+                    f"You are Missing the following Rights to use this Command:\n{permission}",
+                )
+        if isinstance(permission, list):
+            permissions = ""
+            for perm in permission:
+                if not await check_rights(
+                    CallbackQuery.message.chat.id,
+                    CallbackQuery.from_user.id,
+                    perm,
+                    client=client,
+                ):
+                    permissions += f"\n{perm}"
+                    if not permissions == "":
+                        return await CallbackQuery.message.edit_text(
+                            f"You are Missing the following Rights to use this Command:{permissions}",
+                        )
+        try:
+            await CallbackQuery.message.delete()
+            await cb[1](client, cb[0])
+        except pyrogram.errors.exceptions.forbidden_403.ChatAdminRequired:
+            return await CallbackQuery.message.edit_text(
+                "I must be admin to execute this Command",
+            )
+        except BaseException as e:
+            return await handle_error(e, CallbackQuery)
+
     def adminsOnly(
         self,
         permission: typing.Union[str, list],
         TRUST_ANON_ADMINS: typing.Union[bool, bool] = False,
     ):
         """
-        ### `tgEasy.tgClient.adminsOnly`
+        # `tgEasy.tgClient.adminsOnly`
         - A decorater for running the function only if the admin have the specified Rights.
         - We are still Working on this to make it to check Rights for Anonoymous Admins, Stay Tuned.
         - Parameters:
@@ -41,7 +122,7 @@ class AdminsOnly(Scaffold):
         - TRUST_ANON_ADMIN (bool) **optional**:
             - If User is Anonymous Admin also, It Runs the Function, By Default False
 
-        ### Example
+        # Example
         .. code-block:: python
             from tgEasy import tgClient
             import pyrogram
@@ -59,34 +140,48 @@ class AdminsOnly(Scaffold):
                 permissions = ""
                 if not message.chat.type == "supergroup":
                     return await message.reply_text(
-                        "This command can be used in supergroups only."
+                        "This command can be used in supergroups only.",
                     )
                 if message.sender_chat and not TRUST_ANON_ADMINS:
-                    return await message.reply_text(
-                        "The Right Check for Anonymous Admins is in Development. So you cannot perform this Action for Now, If you don't want this and want to Allow Anonymous Admins for performing Actions in this time Please Contact Bot Owner."
+                    # return await message.reply_text(
+                    #     "The Right Check for Anonymous Admins is in Development. So you cannot perform this Action for Now, If you don't want this and want to Allow Anonymous Admins for performing Actions in this time Please Contact Bot Owner.",
+                    # )
+                    ANON[int(f"{message.chat.id}{message.message_id}")] = (
+                        message,
+                        func,
+                        permission,
                     )
+                    return await anonymous_admin(message)
                 if not await is_admin(
-                    message.chat.id, message.from_user.id, client=client
+                    message.chat.id,
+                    message.from_user.id,
+                    client=client,
                 ):
                     return await message.reply_text(
-                        "Only admins can execute this Command!"
+                        "Only admins can execute this Command!",
                     )
                 if isinstance(permission, str):
                     if not await check_rights(
-                        message.chat.id, message.from_user.id, permission, client=client
+                        message.chat.id,
+                        message.from_user.id,
+                        permission,
+                        client=client,
                     ):
                         return await message.reply_text(
-                            f"You are Missing the following Rights to use this Command:\n{permission}"
+                            f"You are Missing the following Rights to use this Command:\n{permission}",
                         )
                 if isinstance(permission, list):
                     for perm in permission:
                         if not await check_rights(
-                            message.chat.id, message.from_user.id, perm, client=client
+                            message.chat.id,
+                            message.from_user.id,
+                            perm,
+                            client=client,
                         ):
                             permissions += f"\n{perm}"
                     if not permissions == "":
                         return await message.reply_text(
-                            f"You are Missing the following Rights to use this Command:{permissions}"
+                            f"You are Missing the following Rights to use this Command:{permissions}",
                         )
                 try:
                     await func(client, message)
@@ -95,6 +190,12 @@ class AdminsOnly(Scaffold):
                 except BaseException as exception:
                     await handle_error(exception, message)
 
+            self.__client__.add_handler(
+                pyrogram.handlers.CallbackQueryHandler(
+                    AdminsOnly.anonymous_admin_verification,
+                    pyrogram.filters.regex("^anon."),
+                ),
+            )
             return decorator
 
         return wrapper

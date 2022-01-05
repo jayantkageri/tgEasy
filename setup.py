@@ -29,6 +29,9 @@ with open("tgEasy/__init__.py", encoding="utf-8") as f:
 with open("README.md", encoding="utf-8") as f:
     readme = f.read()
 
+with open("requirements.txt", encoding="utf-8") as f:
+    requirements = f.read().splitlines()
+
 setup(
     name="tgEasy",
     version=version,
@@ -71,5 +74,5 @@ setup(
     python_requires="~=3.6",
     packages=find_packages(),
     zip_safe=False,
-    install_requires=["pyrogram", "tgcrypto", "pyromod", "prettyconf"],
+    install_requires=requirements,
 )

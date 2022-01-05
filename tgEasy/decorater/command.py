@@ -19,6 +19,7 @@
 import typing
 
 import pyrogram
+
 from tgEasy.scaffold import Scaffold
 
 from ..config import Config
