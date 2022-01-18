@@ -23,7 +23,7 @@ import pyrogram
 
 async def send_typing(
     m: typing.Union[pyrogram.types.Message, pyrogram.types.CallbackQuery]
-):
+) -> bool:
     """
     ### `tgEasy.send_typing`
     - A Function to Send the Typing Status to the Chat.

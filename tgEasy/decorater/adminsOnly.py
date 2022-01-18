@@ -20,7 +20,6 @@ import typing
 
 import pyrogram
 from cachetools import TTLCache
-from pyrogram.types.messages_and_media import message
 
 from tgEasy.scaffold import Scaffold
 
@@ -114,13 +113,13 @@ class AdminsOnly(Scaffold):
         """
         # `tgEasy.tgClient.adminsOnly`
         - A decorater for running the function only if the admin have the specified Rights.
-        - We are still Working on this to make it to check Rights for Anonoymous Admins, Stay Tuned.
+        - If the admin is Anonymous Admin, it also checks his rights by making a Callback.
         - Parameters:
         - permission (str):
             - Permission which the User must have to use the Functions
 
         - TRUST_ANON_ADMIN (bool) **optional**:
-            - If User is Anonymous Admin also, It Runs the Function, By Default False
+            - If the user is an Anonymous Admin, then it bypasses his right check.
 
         # Example
         .. code-block:: python
@@ -143,9 +142,6 @@ class AdminsOnly(Scaffold):
                         "This command can be used in supergroups only.",
                     )
                 if message.sender_chat and not TRUST_ANON_ADMINS:
-                    # return await message.reply_text(
-                    #     "The Right Check for Anonymous Admins is in Development. So you cannot perform this Action for Now, If you don't want this and want to Allow Anonymous Admins for performing Actions in this time Please Contact Bot Owner.",
-                    # )
                     ANON[int(f"{message.chat.id}{message.message_id}")] = (
                         message,
                         func,

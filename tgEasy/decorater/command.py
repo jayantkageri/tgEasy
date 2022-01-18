@@ -34,6 +34,7 @@ class Command(Scaffold):
         group_only: typing.Union[bool, bool] = False,
         self_admin: typing.Union[bool, bool] = False,
         self_only: typing.Union[bool, bool] = False,
+        handler: typing.Optional[list] = Config.HANDLERS,
         filter: typing.Union[pyrogram.filters.Filter, pyrogram.filters.Filter] = None,
         *args,
         **kwargs
@@ -53,6 +54,9 @@ class Command(Scaffold):
 
         - self_only (bool) **optional**:
             - If True, the command will only excute if used by Self only, By Default False.
+
+        - handler (list) **optional**:
+            - If set, the command will be handled by the specified Handler, By Default `Config.HANDLERS`.
 
         - self_admin (bool) **optional**:
             - If True, the command will only executeed if the Bot is Admin in the Chat, By Default False
@@ -74,14 +78,14 @@ class Command(Scaffold):
         if filter:
             if self_only:
                 filter = (
-                    pyrogram.filters.command(command, prefixes=Config.HANDLERS)
+                    pyrogram.filters.command(command, prefixes=handler)
                     & ~pyrogram.filters.edited
                     & filter
                     & pyrogram.filters.me
                 )
             else:
                 filter = (
-                    pyrogram.filters.command(command, prefixes=Config.HANDLERS)
+                    pyrogram.filters.command(command, prefixes=handler)
                     & ~pyrogram.filters.edited
                     & filter
                     & pyrogram.filters.me
@@ -89,13 +93,13 @@ class Command(Scaffold):
         else:
             if self_only:
                 filter = (
-                    pyrogram.filters.command(command, prefixes=Config.HANDLERS)
+                    pyrogram.filters.command(command, prefixes=handler)
                     & ~pyrogram.filters.edited
                     & pyrogram.filters.me
                 )
             else:
                 filter = (
-                    pyrogram.filters.command(command, prefixes=Config.HANDLERS)
+                    pyrogram.filters.command(command, prefixes=handler)
                     & ~pyrogram.filters.edited
                 )
 

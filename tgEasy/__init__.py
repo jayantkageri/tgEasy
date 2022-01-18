@@ -22,7 +22,8 @@ import logging as logger
 import pyrogram
 from pyrogram import client
 from pyromod import listen
-from pyromod.helpers import array_chunk, bki, btn, force_reply, ikb, kb, kbtn, ntb
+from pyromod.helpers import (array_chunk, bki, btn, force_reply, ikb, kb, kbtn,
+                             ntb)
 from pyromod.nav import Pagination
 
 from .config import Config
@@ -30,7 +31,7 @@ from .decorater import *
 from .helpers import *
 from .scaffold import Scaffold
 
-__version__ = "1.3.0"
+__version__ = "1.3.1"
 __copyright__ = "Copyright 2021 Jayant Hegde Kageri <github.com/jayantkageri>"
 __license__ = "GNU Lesser General Public License v3 or later (LGPLv3+)"
 logging = logger.getLogger("tgEasy")

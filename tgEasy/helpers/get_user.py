@@ -23,7 +23,7 @@ import pyrogram
 
 async def get_user(
     m: typing.Union[pyrogram.types.Message, pyrogram.types.CallbackQuery]
-):
+) -> pyrogram.types.User or bool:
     """
     ### `tgEasy.get_user`
     - Gets a User from Message/RepliedMessage/CallbackQuery
@@ -88,7 +88,7 @@ async def get_user(
 
 async def get_user_adv(
     m: typing.Union[pyrogram.types.Message, pyrogram.types.CallbackQuery]
-):
+) -> pyrogram.types.User or bool:
     """
     ### `tgEasy.get_user_adv`
     - A Function to Get the User from the Message/CallbackQuery, If there is None arguments, returns the From User.

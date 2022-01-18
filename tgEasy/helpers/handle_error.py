@@ -84,3 +84,4 @@ async def handle_error(
             pass
     logging.exception(traceback.format_exc())
     os.remove("crash.log")
+    return True
