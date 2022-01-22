@@ -1,5 +1,5 @@
 # tgEasy - Easy for a brighter Shine. A monkey pather add-on for Pyrogram
-# Copyright (C) 2021 Jayant Hegde Kageri <https://github.com/jayantkageri>
+# Copyright (C) 2021 - 2022 Jayant Hegde Kageri <https://github.com/jayantkageri>
 
 # This file is part of tgEasy.
 
