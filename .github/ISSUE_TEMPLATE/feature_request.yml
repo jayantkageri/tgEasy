@@ -1,14 +1,5 @@
----
 name: Feature request
-about: Suggest an idea for this project
-title: ''
-labels: ''
-assignees: ''
-
----
-
-name: Feature request
-description: Suggest ideas, new features, or enhancements
+description: Suggest ideas, new features or enhancements
 labels: [enhancement]
 body:
   - type: checkboxes
