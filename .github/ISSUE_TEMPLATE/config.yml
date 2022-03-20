@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Ask tgEasy related questions
+    url: https://stackoverflow.com/questions/tagged/tgEasy
+    about: This place is only for reporting issues about tgEasy. You can ask questions at StackOverflow.
+  - name: Join the Telegram channel
+    url: https://t.me/tgEasyNews
+    about: Join the official channel and stay tuned for news, updates and announcements.
