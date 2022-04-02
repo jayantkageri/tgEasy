@@ -46,7 +46,7 @@ class tgClient(Methods, Scaffold):
     notice_displayed = False
     __client__ = None
 
-    def __init__(self, client=pyrogram.Client):
+    def __init__(self, client: pyrogram.Client):
         """
         ### `tgEasy.tgClient`
         - A Class for Initialising the tgEasy and it's Methods, Types and Functions
@@ -91,7 +91,8 @@ class tgClient(Methods, Scaffold):
         logging.info("Starting the pyrogram.Client")
         try:
             self.__client__.start()
-            self.__client__.send_message(Config.LOGS, "pyrogram.Client Started")
+            self.__client__.send_message(
+                Config.LOGS, "pyrogram.Client Started")
         except pyrogram.errors.exceptions.bad_request_400.PeerIdInvalid:
             logging.warning("Interact the Bot to your Log Group Now")
             pass
