@@ -58,6 +58,8 @@ async def handle_error(
 
     from .. import logging
 
+    logging.exception(traceback.format_exc())
+
     with open("crash.log", "w+", encoding="utf-8") as log:
         log.write(traceback.format_exc())
         log.close()
@@ -82,6 +84,5 @@ async def handle_error(
             )
         except:
             pass
-    logging.exception(traceback.format_exc())
     os.remove("crash.log")
     return True

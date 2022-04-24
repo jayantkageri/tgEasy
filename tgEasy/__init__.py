@@ -18,6 +18,7 @@
 
 import asyncio
 import logging as logger
+from datetime import datetime
 
 import pyrogram
 from pyrogram import client
@@ -32,7 +33,7 @@ from .helpers import *
 from .scaffold import Scaffold
 
 __version__ = "1.3.1"
-__copyright__ = "Copyright 2021 Jayant Hegde Kageri <github.com/jayantkageri>"
+__copyright__ = f"Copyright 2021 - {datetime.now().year} Jayant Hegde Kageri <github.com/jayantkageri>"
 __license__ = "GNU Lesser General Public License v3 or later (LGPLv3+)"
 logging = logger.getLogger("tgEasy")
 main_event_loop = asyncio.get_event_loop()
@@ -91,10 +92,9 @@ class tgClient(Methods, Scaffold):
         logging.info("Starting the pyrogram.Client")
         try:
             self.__client__.start()
-            self.__client__.send_message(
-                Config.LOGS, "pyrogram.Client Started")
+            self.__client__.send_message(Config.LOGS, "pyrogram.Client Started")
         except pyrogram.errors.exceptions.bad_request_400.PeerIdInvalid:
-            logging.warning("Interact the Bot to your Log Group Now")
+            logging.warning("Interact the Bot to your Log Chat Now")
             pass
         logging.info("Started the pyrogram.Client")
         logging.info("Idling the pyrogram.Client")
@@ -106,7 +106,7 @@ class tgClient(Methods, Scaffold):
             )
         except pyrogram.errors.exceptions.bad_request_400.PeerIdInvalid:
             logging.warning(
-                "Unable to Send Message to Log Group, Please Interact Bot with the Log Group while Running"
+                "Unable to Send Message to Log Chat, Please Interact Bot with the Log Group while Running"
             )
             pass
         logging.info("Stopping the pyrogram.Client")

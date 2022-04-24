@@ -16,10 +16,7 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with tgEasy.  If not, see <http://www.gnu.org/licenses/>.
 
-import os
 import re
-import shutil
-from sys import argv
 
 from setuptools import find_packages, setup
 
@@ -30,7 +27,7 @@ with open("README.md", encoding="utf-8") as f:
     readme = f.read()
 
 with open("requirements.txt", encoding="utf-8") as f:
-    requirements = f.read().splitlines()
+    requires = f.read().splitlines()
 
 setup(
     name="tgEasy",
@@ -74,5 +71,5 @@ setup(
     python_requires="~=3.6",
     packages=find_packages(),
     zip_safe=False,
-    install_requires=requirements,
+    install_requires=requires,
 )
