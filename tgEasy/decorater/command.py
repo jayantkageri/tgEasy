@@ -79,14 +79,12 @@ class Command(Scaffold):
             if self_only:
                 filter = (
                     pyrogram.filters.command(command, prefixes=handler)
-                    & ~pyrogram.filters.edited
                     & filter
                     & pyrogram.filters.me
                 )
             else:
                 filter = (
                     pyrogram.filters.command(command, prefixes=handler)
-                    & ~pyrogram.filters.edited
                     & filter
                     & pyrogram.filters.me
                 )
@@ -94,14 +92,10 @@ class Command(Scaffold):
             if self_only:
                 filter = (
                     pyrogram.filters.command(command, prefixes=handler)
-                    & ~pyrogram.filters.edited
                     & pyrogram.filters.me
                 )
             else:
-                filter = (
-                    pyrogram.filters.command(command, prefixes=handler)
-                    & ~pyrogram.filters.edited
-                )
+                filter = pyrogram.filters.command(command, prefixes=handler)
 
         def wrapper(func):
             async def decorator(client, message: pyrogram.types.Message):
