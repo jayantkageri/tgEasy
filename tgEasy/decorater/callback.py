@@ -30,7 +30,8 @@ class Callback(Scaffold):
         self,
         data: typing.Union[str, list],
         self_admin: typing.Union[bool, bool] = False,
-        filter: typing.Union[pyrogram.filters.Filter, pyrogram.filters.Filter] = None,
+        filter: typing.Union[pyrogram.filters.Filter,
+                             pyrogram.filters.Filter] = None,
         *args,
         **kwargs,
     ):
@@ -82,7 +83,7 @@ class Callback(Scaffold):
                     me = await client.get_chat_member(
                         CallbackQuery.message.chat.id, (await client.get_me()).id
                     )
-                    if not me.status in ("creator", "administrator"):
+                    if not me.status in (pyrogram.enums.ChatMemberStatus.OWNER, pyrogram.enums.ChatMemberStatus.ADMINISTRATOR):
                         return await CallbackQuery.message.edit_text(
                             "I must be admin to execute this Command"
                         )

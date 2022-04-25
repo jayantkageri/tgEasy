@@ -32,7 +32,7 @@ from .decorater import *
 from .helpers import *
 from .scaffold import Scaffold
 
-__version__ = "1.3.2"
+__version__ = "1.3.3"
 __copyright__ = f"Copyright 2021 - {datetime.now().year} Jayant Hegde Kageri <github.com/jayantkageri>"
 __license__ = "GNU Lesser General Public License v3 or later (LGPLv3+)"
 logging = logger.getLogger("tgEasy")
@@ -92,7 +92,8 @@ class tgClient(Methods, Scaffold):
         logging.info("Starting the pyrogram.Client")
         try:
             self.__client__.start()
-            self.__client__.send_message(Config.LOGS, "pyrogram.Client Started")
+            self.__client__.send_message(
+                Config.LOGS, "pyrogram.Client Started")
         except pyrogram.errors.exceptions.bad_request_400.PeerIdInvalid:
             logging.warning("Interact the Bot to your Log Chat Now")
             pass

@@ -17,6 +17,7 @@
 # along with tgEasy.  If not, see <http://www.gnu.org/licenses/>.
 
 import typing
+import pyrogram
 
 
 async def check_rights(
@@ -67,24 +68,41 @@ async def check_rights(
         return False
     if user.status == "user":
         return False
-    if user.status in ("administrator", "creator"):
+    if user.status in (pyrogram.enums.ChatMemberStatus.OWNER, pyrogram.enums.ChatMemberStatus.ADMINISTRATOR):
         permission = []
-        if user.can_delete_messages:
+        if user.privileges.can_manage_chat:
+            permission.append("can_manage_chat")
+
+        if user.privileges.can_delete_messages:
             permission.append("can_delete_messages")
-        if user.can_restrict_members:
+
+        if user.privileges.can_manage_video_chats:
+            permission.append("can_manage_video_chats")
+
+        if user.privileges.can_restrict_members:
             permission.append("can_restrict_members")
-        if user.can_promote_members:
+
+        if user.privileges.can_promote_members:
             permission.append("can_promote_members")
-        if user.can_change_info:
+
+        if user.privileges.can_change_info:
             permission.append("can_change_info")
-        if user.can_invite_users:
+
+        if user.privileges.can_post_messages:
+            permission.append("can_post_messages")
+
+        if user.privileges.can_edit_messages:
+            permission.append("can_edit_messages")
+
+        if user.privileges.can_invite_users:
             permission.append("can_invite_users")
-        if user.can_pin_messages:
+
+        if user.privileges.can_pin_messages:
             permission.append("can_pin_messages")
-        if user.can_manage_voice_chats:
-            permission.append("can_manage_voice_chats")
-        if user.is_anonymous:
+
+        if user.privileges.is_anonymous:
             permission.append("is_anonymous")
+
         if isinstance(rights, str):
             if rights in permission:
                 return True
@@ -136,6 +154,6 @@ async def is_admin(
         user = await client.get_chat_member(chat_id, user_id)
     except:
         return False
-    if user.status in ("administrator", "creator"):
+    if user.status in (pyrogram.enums.ChatMemberStatus.OWNER, pyrogram.enums.ChatMemberStatus.ADMINISTRATOR):
         return True
     return False

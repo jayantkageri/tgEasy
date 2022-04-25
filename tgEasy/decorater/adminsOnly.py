@@ -37,7 +37,7 @@ async def anonymous_admin(m: pyrogram.types.Message):
             [
                 pyrogram.types.InlineKeyboardButton(
                     text="Verify!",
-                    callback_data=f"anon.{m.message_id}",
+                    callback_data=f"anon.{m.id}",
                 ),
             ]
         ]
@@ -64,10 +64,11 @@ class AdminsOnly(Scaffold):
                     pass
             return
         cb = ANON.pop(
-            int(f"{CallbackQuery.message.chat.id}{CallbackQuery.data.split('.')[1]}")
+            int(
+                f"{CallbackQuery.message.chat.id}{CallbackQuery.data.split('.')[1]}")
         )
         member = await CallbackQuery.message.chat.get_member(CallbackQuery.from_user.id)
-        if bool(member.status not in ("creator", "administrator")):
+        if bool(member.status not in (pyrogram.enums.ChatMemberStatus.OWNER, pyrogram.enums.ChatMemberStatus.ADMINISTRATOR)):
             return await CallbackQuery.answer("You need to be an admin to do this.")
         permission = cb[2]
 
@@ -137,12 +138,12 @@ class AdminsOnly(Scaffold):
         def wrapper(func):
             async def decorator(client, message):
                 permissions = ""
-                if not message.chat.type == "supergroup":
+                if not message.chat.type == pyrogram.enums.ChatType.SUPERGROUP:
                     return await message.reply_text(
                         "This command can be used in supergroups only.",
                     )
                 if message.sender_chat and not TRUST_ANON_ADMINS:
-                    ANON[int(f"{message.chat.id}{message.message_id}")] = (
+                    ANON[int(f"{message.chat.id}{message.id}")] = (
                         message,
                         func,
                         permission,

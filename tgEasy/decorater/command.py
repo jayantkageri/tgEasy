@@ -35,7 +35,8 @@ class Command(Scaffold):
         self_admin: typing.Union[bool, bool] = False,
         self_only: typing.Union[bool, bool] = False,
         handler: typing.Optional[list] = Config.HANDLERS,
-        filter: typing.Union[pyrogram.filters.Filter, pyrogram.filters.Filter] = None,
+        filter: typing.Union[pyrogram.filters.Filter,
+                             pyrogram.filters.Filter] = None,
         *args,
         **kwargs
     ):
@@ -62,7 +63,7 @@ class Command(Scaffold):
             - If True, the command will only executeed if the Bot is Admin in the Chat, By Default False
 
         - filter (`~pyrogram.filters`) **optional**:
-            - Pyrogram Filters, hope you know about this, for Advaced usage. By Default `~pyrogram.filters.edited` and this can't be changed. Use `and` for seaperating filters.
+            - Pyrogram Filters, hope you know about this, for Advaced usage. Use `and` for seaperating filters.
 
         #### Example
         .. code-block:: python
@@ -99,7 +100,7 @@ class Command(Scaffold):
 
         def wrapper(func):
             async def decorator(client, message: pyrogram.types.Message):
-                if self_admin and message.chat.type != "supergroup":
+                if self_admin and message.chat.type != pyrogram.enums.ChatType.SUPERGROUP:
                     return await message.reply_text(
                         "This command can be used in supergroups only."
                     )
@@ -107,16 +108,16 @@ class Command(Scaffold):
                     me = await client.get_chat_member(
                         message.chat.id, (await client.get_me()).id
                     )
-                    if not me.status in ("creator", "administrator"):
+                    if not me.status in (pyrogram.enums.ChatMemberStatus.OWNER, pyrogram.enums.ChatMemberStatus.ADMINISTRATOR):
                         return await message.reply_text(
                             "I must be admin to execute this Command"
                         )
                     pass
-                if group_only and message.chat.type != "supergroup":
+                if group_only and message.chat.type != pyrogram.enums.ChatType.SUPERGROUP:
                     return await message.reply_text(
                         "This command can be used in supergroups only."
                     )
-                if pm_only and message.chat.type != "private":
+                if pm_only and message.chat.type != pyrogram.enums.ChatType.PRIVATE:
                     return await message.reply_text(
                         "This command can be used in PMs only."
                     )
@@ -128,7 +129,8 @@ class Command(Scaffold):
                     return await handle_error(exception, message)
 
             self.__client__.add_handler(
-                pyrogram.handlers.MessageHandler(callback=decorator, filters=filter)
+                pyrogram.handlers.MessageHandler(
+                    callback=decorator, filters=filter)
             )
             return decorator
 
