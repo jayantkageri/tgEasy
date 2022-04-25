@@ -92,8 +92,7 @@ class tgClient(Methods, Scaffold):
         logging.info("Starting the pyrogram.Client")
         try:
             self.__client__.start()
-            self.__client__.send_message(
-                Config.LOGS, "pyrogram.Client Started")
+            self.__client__.send_message(Config.LOGS, "pyrogram.Client Started")
         except pyrogram.errors.exceptions.bad_request_400.PeerIdInvalid:
             logging.warning("Interact the Bot to your Log Chat Now")
             pass

@@ -35,8 +35,7 @@ class Command(Scaffold):
         self_admin: typing.Union[bool, bool] = False,
         self_only: typing.Union[bool, bool] = False,
         handler: typing.Optional[list] = Config.HANDLERS,
-        filter: typing.Union[pyrogram.filters.Filter,
-                             pyrogram.filters.Filter] = None,
+        filter: typing.Union[pyrogram.filters.Filter, pyrogram.filters.Filter] = None,
         *args,
         **kwargs
     ):
@@ -100,7 +99,10 @@ class Command(Scaffold):
 
         def wrapper(func):
             async def decorator(client, message: pyrogram.types.Message):
-                if self_admin and message.chat.type != pyrogram.enums.ChatType.SUPERGROUP:
+                if (
+                    self_admin
+                    and message.chat.type != pyrogram.enums.ChatType.SUPERGROUP
+                ):
                     return await message.reply_text(
                         "This command can be used in supergroups only."
                     )
@@ -108,12 +110,18 @@ class Command(Scaffold):
                     me = await client.get_chat_member(
                         message.chat.id, (await client.get_me()).id
                     )
-                    if not me.status in (pyrogram.enums.ChatMemberStatus.OWNER, pyrogram.enums.ChatMemberStatus.ADMINISTRATOR):
+                    if not me.status in (
+                        pyrogram.enums.ChatMemberStatus.OWNER,
+                        pyrogram.enums.ChatMemberStatus.ADMINISTRATOR,
+                    ):
                         return await message.reply_text(
                             "I must be admin to execute this Command"
                         )
                     pass
-                if group_only and message.chat.type != pyrogram.enums.ChatType.SUPERGROUP:
+                if (
+                    group_only
+                    and message.chat.type != pyrogram.enums.ChatType.SUPERGROUP
+                ):
                     return await message.reply_text(
                         "This command can be used in supergroups only."
                     )
@@ -129,8 +137,7 @@ class Command(Scaffold):
                     return await handle_error(exception, message)
 
             self.__client__.add_handler(
-                pyrogram.handlers.MessageHandler(
-                    callback=decorator, filters=filter)
+                pyrogram.handlers.MessageHandler(callback=decorator, filters=filter)
             )
             return decorator
 

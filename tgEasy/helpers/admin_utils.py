@@ -17,6 +17,7 @@
 # along with tgEasy.  If not, see <http://www.gnu.org/licenses/>.
 
 import typing
+
 import pyrogram
 
 
@@ -68,7 +69,10 @@ async def check_rights(
         return False
     if user.status == "user":
         return False
-    if user.status in (pyrogram.enums.ChatMemberStatus.OWNER, pyrogram.enums.ChatMemberStatus.ADMINISTRATOR):
+    if user.status in (
+        pyrogram.enums.ChatMemberStatus.OWNER,
+        pyrogram.enums.ChatMemberStatus.ADMINISTRATOR,
+    ):
         permission = []
         if user.privileges.can_manage_chat:
             permission.append("can_manage_chat")
@@ -154,6 +158,9 @@ async def is_admin(
         user = await client.get_chat_member(chat_id, user_id)
     except:
         return False
-    if user.status in (pyrogram.enums.ChatMemberStatus.OWNER, pyrogram.enums.ChatMemberStatus.ADMINISTRATOR):
+    if user.status in (
+        pyrogram.enums.ChatMemberStatus.OWNER,
+        pyrogram.enums.ChatMemberStatus.ADMINISTRATOR,
+    ):
         return True
     return False

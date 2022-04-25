@@ -64,11 +64,16 @@ class AdminsOnly(Scaffold):
                     pass
             return
         cb = ANON.pop(
-            int(
-                f"{CallbackQuery.message.chat.id}{CallbackQuery.data.split('.')[1]}")
+            int(f"{CallbackQuery.message.chat.id}{CallbackQuery.data.split('.')[1]}")
         )
         member = await CallbackQuery.message.chat.get_member(CallbackQuery.from_user.id)
-        if bool(member.status not in (pyrogram.enums.ChatMemberStatus.OWNER, pyrogram.enums.ChatMemberStatus.ADMINISTRATOR)):
+        if bool(
+            member.status
+            not in (
+                pyrogram.enums.ChatMemberStatus.OWNER,
+                pyrogram.enums.ChatMemberStatus.ADMINISTRATOR,
+            )
+        ):
             return await CallbackQuery.answer("You need to be an admin to do this.")
         permission = cb[2]
 
