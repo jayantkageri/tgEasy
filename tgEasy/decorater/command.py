@@ -34,7 +34,7 @@ class Command(Scaffold):
         group_only: typing.Union[bool, bool] = False,
         self_admin: typing.Union[bool, bool] = False,
         self_only: typing.Union[bool, bool] = False,
-        handler: typing.Optional[list] = Config.HANDLERS,
+        handler: typing.Optional[list] = None,
         filter: typing.Union[pyrogram.filters.Filter, pyrogram.filters.Filter] = None,
         *args,
         **kwargs
@@ -75,6 +75,8 @@ class Command(Scaffold):
             async def start(client, message):
                 await message.reply_text(f"Hello {message.from_user.mention}")
         """
+        if handler is None:
+            handler = Config.HANDLERS
         if filter:
             if self_only:
                 filter = (
