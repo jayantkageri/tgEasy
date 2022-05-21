@@ -16,6 +16,7 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with tgEasy.  If not, see <http://www.gnu.org/licenses/>.
 
+import contextlib
 import typing
 
 import pyrogram
@@ -54,35 +55,25 @@ async def get_user(
             return False
         return await client.get_users(message.reply_to_message.from_user.id)
 
-    if len(message.command) > 1:
-        command = message.command[1]
-    else:
-        command = None
-
-    if command:
-        if command.startswith("@") or command.isdigit():
-            try:
-                return await client.get_users(message.command[1])
-            except pyrogram.errors.exceptions.bad_request_400.UsernameNotOccupied:
-                pass
-            except pyrogram.errors.exceptions.bad_request_400.UsernameInvalid:
-                pass
-            except pyrogram.errors.exceptions.bad_request_400.PeerIdInvalid:
-                pass
-            except IndexError:
-                pass
-    else:
-        pass
-
+    command = message.command[1] if len(message.command) > 1 else None
+    if command and (command.startswith("@") or command.isdigit()):
+        try:
+            return await client.get_users(message.command[1])
+        except pyrogram.errors.exceptions.bad_request_400.UsernameNotOccupied:
+            pass
+        except pyrogram.errors.exceptions.bad_request_400.UsernameInvalid:
+            pass
+        except pyrogram.errors.exceptions.bad_request_400.PeerIdInvalid:
+            pass
+        except IndexError:
+            pass
     if message.entities:
         for mention in message.entities:
             if mention.type == "text_mention":
                 user = mention.user.id
                 break
-        try:
+        with contextlib.suppress(Exception):
             return await client.get_users(user)
-        except:
-            pass
     return False
 
 
@@ -114,7 +105,7 @@ async def get_user_adv(
         message = m.message
     if message.sender_chat:
         return False
-    try:
+    with contextlib.suppress(IndexError, AttributeError):
         if len(message.command) > 1:
             if message.command[1].startswith("@"):
                 return await get_user(message)
@@ -124,11 +115,6 @@ async def get_user_adv(
                 return await get_user(message)
             if "from_user" in str(message.reply_to_message):
                 return await get_user(message)
-    except IndexError:
-        pass
-    except AttributeError:
-        pass
-
     try:
         if "sender_chat" in str(message.reply_to_message):
             return False

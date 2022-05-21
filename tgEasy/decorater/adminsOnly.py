@@ -16,6 +16,7 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with tgEasy.  If not, see <http://www.gnu.org/licenses/>.
 
+import contextlib
 import typing
 
 import pyrogram
@@ -49,61 +50,41 @@ async def anonymous_admin(m: pyrogram.types.Message):
 
 
 class AdminsOnly(Scaffold):
-    async def anonymous_admin_verification(
-        client, CallbackQuery: pyrogram.types.CallbackQuery
-    ):
+    async def anonymous_admin_verification(self, CallbackQuery: pyrogram.types.CallbackQuery):
         if int(
             f"{CallbackQuery.message.chat.id}{CallbackQuery.data.split('.')[1]}"
         ) not in set(ANON.keys()):
             try:
                 await CallbackQuery.message.edit_text("Button has been Expired.")
             except pyrogram.types.RPCError:
-                try:
+                with contextlib.suppress(pyrogram.types.RPCError):
                     await CallbackQuery.message.delete()
-                except pyrogram.types.RPCError:
-                    pass
             return
         cb = ANON.pop(
-            int(f"{CallbackQuery.message.chat.id}{CallbackQuery.data.split('.')[1]}")
+            int(
+                f"{CallbackQuery.message.chat.id}{CallbackQuery.data.split('.')[1]}")
         )
         member = await CallbackQuery.message.chat.get_member(CallbackQuery.from_user.id)
-        if bool(
-            member.status
-            not in (
-                pyrogram.enums.ChatMemberStatus.OWNER,
-                pyrogram.enums.ChatMemberStatus.ADMINISTRATOR,
-            )
-        ):
+        if member.status not in (pyrogram.enums.ChatMemberStatus.OWNER, pyrogram.enums.ChatMemberStatus.ADMINISTRATOR,):
             return await CallbackQuery.answer("You need to be an admin to do this.")
         permission = cb[2]
 
-        if isinstance(permission, str):
-            if not await check_rights(
-                CallbackQuery.message.chat.id,
-                CallbackQuery.from_user.id,
-                permission,
-                client=client,
-            ):
-                return await CallbackQuery.message.edit_text(
-                    f"You are Missing the following Rights to use this Command:\n{permission}",
-                )
+        if isinstance(permission, str) and not await check_rights(CallbackQuery.message.chat.id, CallbackQuery.from_user.id, permission, client=self):
+            return await CallbackQuery.message.edit_text(
+                f"You are Missing the following Rights to use this Command:\n{permission}",
+            )
         if isinstance(permission, list):
             permissions = ""
             for perm in permission:
-                if not await check_rights(
-                    CallbackQuery.message.chat.id,
-                    CallbackQuery.from_user.id,
-                    perm,
-                    client=client,
-                ):
+                if not await check_rights(CallbackQuery.message.chat.id, CallbackQuery.from_user.id, perm, client=self):
                     permissions += f"\n{perm}"
-                    if not permissions == "":
+                    if permissions != "":
                         return await CallbackQuery.message.edit_text(
                             f"You are Missing the following Rights to use this Command:{permissions}",
                         )
         try:
             await CallbackQuery.message.delete()
-            await cb[1](client, cb[0])
+            await cb[1](self, cb[0])
         except pyrogram.errors.exceptions.forbidden_403.ChatAdminRequired:
             return await CallbackQuery.message.edit_text(
                 "I must be admin to execute this Command",
@@ -143,7 +124,7 @@ class AdminsOnly(Scaffold):
         def wrapper(func):
             async def decorator(client, message):
                 permissions = ""
-                if not message.chat.type == pyrogram.enums.ChatType.SUPERGROUP:
+                if message.chat.type != pyrogram.enums.ChatType.SUPERGROUP:
                     return await message.reply_text(
                         "This command can be used in supergroups only.",
                     )
@@ -162,16 +143,10 @@ class AdminsOnly(Scaffold):
                     return await message.reply_text(
                         "Only admins can execute this Command!",
                     )
-                if isinstance(permission, str):
-                    if not await check_rights(
-                        message.chat.id,
-                        message.from_user.id,
-                        permission,
-                        client=client,
-                    ):
-                        return await message.reply_text(
-                            f"You are Missing the following Rights to use this Command:\n{permission}",
-                        )
+                if isinstance(permission, str) and not await check_rights(message.chat.id, message.from_user.id, permission, client=client,):
+                    return await message.reply_text(
+                        f"You are Missing the following Rights to use this Command:\n{permission}",
+                    )
                 if isinstance(permission, list):
                     for perm in permission:
                         if not await check_rights(
@@ -181,7 +156,7 @@ class AdminsOnly(Scaffold):
                             client=client,
                         ):
                             permissions += f"\n{perm}"
-                    if not permissions == "":
+                    if permissions != "":
                         return await message.reply_text(
                             f"You are Missing the following Rights to use this Command:{permissions}",
                         )

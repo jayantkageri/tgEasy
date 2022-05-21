@@ -48,5 +48,5 @@ async def send_typing(
         message = m
     if isinstance(m, pyrogram.types.CallbackQuery):
         message = m.message
-    for i in range(3):
+    for _ in range(3):
         return await message._client.send_chat_action(message.chat.id, "typing")

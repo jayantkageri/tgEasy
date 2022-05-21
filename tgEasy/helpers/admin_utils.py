@@ -65,7 +65,7 @@ async def check_rights(
     """
     try:
         user = await client.get_chat_member(chat_id, user_id)
-    except:
+    except Exception:
         return False
     if user.status == "user":
         return False
@@ -108,14 +108,10 @@ async def check_rights(
             permission.append("is_anonymous")
 
         if isinstance(rights, str):
-            if rights in permission:
-                return True
-            return False
+            return rights in permission
         if isinstance(rights, list):
             for right in rights:
-                if not right in permission:
-                    return False
-                return True
+                return right in permission
     return False
 
 
@@ -156,7 +152,7 @@ async def is_admin(
     """
     try:
         user = await client.get_chat_member(chat_id, user_id)
-    except:
+    except Exception:
         return False
     if user.status in (
         pyrogram.enums.ChatMemberStatus.OWNER,

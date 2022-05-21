@@ -92,10 +92,10 @@ class tgClient(Methods, Scaffold):
         logging.info("Starting the pyrogram.Client")
         try:
             self.__client__.start()
-            self.__client__.send_message(Config.LOGS, "pyrogram.Client Started")
+            self.__client__.send_message(
+                Config.LOGS, "pyrogram.Client Started")
         except pyrogram.errors.exceptions.bad_request_400.PeerIdInvalid:
             logging.warning("Interact the Bot to your Log Chat Now")
-            pass
         logging.info("Started the pyrogram.Client")
         logging.info("Idling the pyrogram.Client")
         pyrogram.idle()
@@ -108,7 +108,6 @@ class tgClient(Methods, Scaffold):
             logging.warning(
                 "Unable to Send Message to Log Chat, Please Interact Bot with the Log Group while Running"
             )
-            pass
         logging.info("Stopping the pyrogram.Client")
         self.__client__.stop()
         logging.info("Stopped the pyrogram.Client")
@@ -146,11 +145,9 @@ class tgClient(Methods, Scaffold):
                     ) if Config.LOGS else None
                 except pyrogram.errors.exceptions.bad_request_400.PeerIdInvalid:
                     logging.warning("Interact the Bot to your Log Group Now")
-                    pass
                 logging.info(f"Started the {client}")
         except pyrogram.errors.exceptions.bad_request_400.PeerIdInvalid:
             logging.warning("Interact with your Log Group Now")
-            pass
 
         logging.info("Idling the pyrogram.Client")
         pyrogram.idle()
@@ -163,10 +160,9 @@ class tgClient(Methods, Scaffold):
                     "pyrogram.Client Stopped, If this is UnExpected check Logs",
                 ) if Config.LOGS else None
 
-            except:
+            except Exception:
                 logging.warning(
                     "Unable to Send Message to Log Group, Please Interact Bot with the Log Group while Running"
                 )
-                pass
 
             clients.__client__.stop()

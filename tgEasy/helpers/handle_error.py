@@ -16,6 +16,7 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with tgEasy.  If not, see <http://www.gnu.org/licenses/>.
 
+import contextlib
 import os
 import typing
 
@@ -64,17 +65,15 @@ async def handle_error(
         log.write(traceback.format_exc())
         log.close()
     if isinstance(m, pyrogram.types.Message):
-        try:
+        with contextlib.suppress(Exception):
             await m.reply_text(
                 "An Internal Error Occurred while Processing your Command, the Logs have been sent to the Owners of this Bot. Sorry for Inconvenience"
             )
             await m._client.send_document(
                 Config.LOGS, "crash.log", caption="Crash Report of this Bot"
             )
-        except:
-            pass
     if isinstance(m, pyrogram.types.CallbackQuery):
-        try:
+        with contextlib.suppress(Exception):
             await m.message.delete()
             await m.message.reply_text(
                 "An Internal Error Occurred while Processing your Command, the Logs have been sent to the Owners of this Bot. Sorry for Inconvenience"
@@ -82,7 +81,5 @@ async def handle_error(
             await m.message._client.send_document(
                 Config.LOGS, "crash.log", caption="Crash Report of this Bot"
             )
-        except:
-            pass
     os.remove("crash.log")
     return True
