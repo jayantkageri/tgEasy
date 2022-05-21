@@ -23,8 +23,7 @@ from datetime import datetime
 import pyrogram
 from pyrogram import client
 from pyromod import listen
-from pyromod.helpers import (array_chunk, bki, btn, force_reply, ikb, kb, kbtn,
-                             ntb)
+from pyromod.helpers import array_chunk, bki, btn, force_reply, ikb, kb, kbtn, ntb
 from pyromod.nav import Pagination
 
 from .config import Config
@@ -92,8 +91,7 @@ class tgClient(Methods, Scaffold):
         logging.info("Starting the pyrogram.Client")
         try:
             self.__client__.start()
-            self.__client__.send_message(
-                Config.LOGS, "pyrogram.Client Started")
+            self.__client__.send_message(Config.LOGS, "pyrogram.Client Started")
         except pyrogram.errors.exceptions.bad_request_400.PeerIdInvalid:
             logging.warning("Interact the Bot to your Log Chat Now")
         logging.info("Started the pyrogram.Client")

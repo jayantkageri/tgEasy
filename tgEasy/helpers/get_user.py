@@ -57,16 +57,13 @@ async def get_user(
 
     command = message.command[1] if len(message.command) > 1 else None
     if command and (command.startswith("@") or command.isdigit()):
-        try:
+        with contextlib.suppress(
+            pyrogram.errors.exceptions.bad_request_400.UsernameNotOccupied,
+            pyrogram.errors.exceptions.bad_request_400.UsernameInvalid,
+            pyrogram.errors.exceptions.bad_request_400.PeerIdInvalid,
+            IndexError,
+        ):
             return await client.get_users(message.command[1])
-        except pyrogram.errors.exceptions.bad_request_400.UsernameNotOccupied:
-            pass
-        except pyrogram.errors.exceptions.bad_request_400.UsernameInvalid:
-            pass
-        except pyrogram.errors.exceptions.bad_request_400.PeerIdInvalid:
-            pass
-        except IndexError:
-            pass
     if message.entities:
         for mention in message.entities:
             if mention.type == "text_mention":
@@ -115,16 +112,11 @@ async def get_user_adv(
                 return await get_user(message)
             if "from_user" in str(message.reply_to_message):
                 return await get_user(message)
-    try:
+    with contextlib.suppress(Exception):
         if "sender_chat" in str(message.reply_to_message):
             return False
         if "from_user" in str(message.reply_to_message):
             return await message._client.get_users(
                 message.reply_to_message.from_user.id
             )
-    except AttributeError:
-        pass
-    except Exception as e:
-        pass
-
     return await message._client.get_users(message.from_user.id)

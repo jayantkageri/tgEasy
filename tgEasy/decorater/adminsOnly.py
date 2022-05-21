@@ -50,7 +50,9 @@ async def anonymous_admin(m: pyrogram.types.Message):
 
 
 class AdminsOnly(Scaffold):
-    async def anonymous_admin_verification(self, CallbackQuery: pyrogram.types.CallbackQuery):
+    async def anonymous_admin_verification(
+        self, CallbackQuery: pyrogram.types.CallbackQuery
+    ):
         if int(
             f"{CallbackQuery.message.chat.id}{CallbackQuery.data.split('.')[1]}"
         ) not in set(ANON.keys()):
@@ -61,22 +63,34 @@ class AdminsOnly(Scaffold):
                     await CallbackQuery.message.delete()
             return
         cb = ANON.pop(
-            int(
-                f"{CallbackQuery.message.chat.id}{CallbackQuery.data.split('.')[1]}")
+            int(f"{CallbackQuery.message.chat.id}{CallbackQuery.data.split('.')[1]}")
         )
         member = await CallbackQuery.message.chat.get_member(CallbackQuery.from_user.id)
-        if member.status not in (pyrogram.enums.ChatMemberStatus.OWNER, pyrogram.enums.ChatMemberStatus.ADMINISTRATOR,):
+        if member.status not in (
+            pyrogram.enums.ChatMemberStatus.OWNER,
+            pyrogram.enums.ChatMemberStatus.ADMINISTRATOR,
+        ):
             return await CallbackQuery.answer("You need to be an admin to do this.")
         permission = cb[2]
 
-        if isinstance(permission, str) and not await check_rights(CallbackQuery.message.chat.id, CallbackQuery.from_user.id, permission, client=self):
+        if isinstance(permission, str) and not await check_rights(
+            CallbackQuery.message.chat.id,
+            CallbackQuery.from_user.id,
+            permission,
+            client=self,
+        ):
             return await CallbackQuery.message.edit_text(
                 f"You are Missing the following Rights to use this Command:\n{permission}",
             )
         if isinstance(permission, list):
             permissions = ""
             for perm in permission:
-                if not await check_rights(CallbackQuery.message.chat.id, CallbackQuery.from_user.id, perm, client=self):
+                if not await check_rights(
+                    CallbackQuery.message.chat.id,
+                    CallbackQuery.from_user.id,
+                    perm,
+                    client=self,
+                ):
                     permissions += f"\n{perm}"
                     if permissions != "":
                         return await CallbackQuery.message.edit_text(
@@ -143,7 +157,12 @@ class AdminsOnly(Scaffold):
                     return await message.reply_text(
                         "Only admins can execute this Command!",
                     )
-                if isinstance(permission, str) and not await check_rights(message.chat.id, message.from_user.id, permission, client=client,):
+                if isinstance(permission, str) and not await check_rights(
+                    message.chat.id,
+                    message.from_user.id,
+                    permission,
+                    client=client,
+                ):
                     return await message.reply_text(
                         f"You are Missing the following Rights to use this Command:\n{permission}",
                     )

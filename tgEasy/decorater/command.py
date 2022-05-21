@@ -35,8 +35,7 @@ class Command(Scaffold):
         self_admin: typing.Union[bool, bool] = False,
         self_only: typing.Union[bool, bool] = False,
         handler: typing.Optional[list] = Config.HANDLERS,
-        filter: typing.Union[pyrogram.filters.Filter,
-                             pyrogram.filters.Filter] = None,
+        filter: typing.Union[pyrogram.filters.Filter, pyrogram.filters.Filter] = None,
         *args,
         **kwargs
     ):
@@ -111,7 +110,10 @@ class Command(Scaffold):
                     me = await client.get_chat_member(
                         message.chat.id, (await client.get_me()).id
                     )
-                    if me.status not in (pyrogram.enums.ChatMemberStatus.OWNER, pyrogram.enums.ChatMemberStatus.ADMINISTRATOR,):
+                    if me.status not in (
+                        pyrogram.enums.ChatMemberStatus.OWNER,
+                        pyrogram.enums.ChatMemberStatus.ADMINISTRATOR,
+                    ):
                         return await message.reply_text(
                             "I must be admin to execute this Command"
                         )
@@ -134,8 +136,7 @@ class Command(Scaffold):
                     return await handle_error(exception, message)
 
             self.__client__.add_handler(
-                pyrogram.handlers.MessageHandler(
-                    callback=decorator, filters=filter)
+                pyrogram.handlers.MessageHandler(callback=decorator, filters=filter)
             )
             return decorator
 
