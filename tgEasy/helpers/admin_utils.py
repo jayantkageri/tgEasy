@@ -154,9 +154,4 @@ async def is_admin(
         user = await client.get_chat_member(chat_id, user_id)
     except Exception:
         return False
-    if user.status in (
-        pyrogram.enums.ChatMemberStatus.OWNER,
-        pyrogram.enums.ChatMemberStatus.ADMINISTRATOR,
-    ):
-        return True
-    return False
+    return user.status in (pyrogram.enums.ChatMemberStatus.OWNER, pyrogram.enums.ChatMemberStatus.ADMINISTRATOR,)
